@@ -1,0 +1,12 @@
+version: 1
+builder:
+  configs:
+  - platform: ios
+    scheme: Athena
+  - platform: macos-xcodebuild
+    scheme: Athena
+  - platform: tvos
+    scheme: Athena
+  - platform: watchos
+    scheme: Athena
+  - documentation_targets: [Athena]
