@@ -27,7 +27,7 @@ import Foundation
 
 public extension JSON {
 
-    /// An error produced when working with JSON
+    /// An error produced when creating, subscripting, traversing, parsing, encoding, decoding or serializing ``JSON`` types
     struct Error: LocalizedError, CustomNSError, Equatable, Hashable, Sendable, CustomStringConvertible, CustomDebugStringConvertible {
 
         // MARK: - API

@@ -123,8 +123,14 @@ extension Int: JSONCodable {
 
     public init(json: JSON) throws {
         switch json {
-        case .array, .object, .null, .string:
+        case .array, .object, .null:
             throw JSON.Error("Int value cannot be decoded from \(json)", .decoding)
+        case let .string(string):
+            guard let int = Int(exactly: string) else {
+                throw JSON.Error("Int value cannot be decoded from \(json)", .decoding)
+            }
+            self = int
+            return
         case let .bool(bool):
             switch bool {
             case true:
@@ -154,8 +160,14 @@ extension Double: JSONCodable {
 
     public init(json: JSON) throws {
         switch json {
-        case .array, .object, .null, .string, .bool:
+        case .array, .object, .null, .bool:
             throw JSON.Error("Double value cannot be decoded from \(json)", .decoding)
+        case let .string(string):
+            guard let double = Double(string) else {
+                throw JSON.Error("Double value cannot be decoded from \(json)", .decoding)
+            }
+            self = double
+            return
         case let .int(int):
             self = Double(int)
             return

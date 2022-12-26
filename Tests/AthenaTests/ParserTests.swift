@@ -245,8 +245,6 @@ final class ParserTests: XCTestCase {
 
         do {
             let json = try JSON.Parser.parse(jsonString)
-            print(json)
-            // Int(integerString) will fail on 32-bit
             XCTAssertEqual(json["floatingPointString"], Int(integerString))
         } catch {
             XCTFail("Integer from floating point String does not match without loosing precision \(error)")

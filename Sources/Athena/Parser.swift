@@ -35,38 +35,16 @@ public extension JSON {
 
         // MARK: - API
 
-        /// Parse a provided UTF-8 encoded `Data` into a ``JSON``
-        ///
-        /// ```swift
-        /// let data = Data( ... )
-        ///
-        /// do {
-        ///     let json = try JSON.Parser.parse(data)
-        /// } catch {
-        ///     print(error)
-        /// }
-        /// ```
-        ///
-        /// - Parameter data: The UTF-8 encoded data you wish to parse into ``JSON``
-        /// - Returns: A ``JSON`` representing the provided UTF-8 encoded data
-        /// - Throws: A `JSON.Error` if the provided `Data` could not be parsed into a ``JSON``
-        public static func parse(_ data: Data) throws -> JSON {
-            try data.withUnsafeBytes { buffer in
-                let pointer = buffer.bindMemory(to: UInt8.self)
-                var parser = Parser(input: pointer)
-                return try parser.parse()
-            }
-        }
-
-        /// Parse a provided UTF-8 encoded `Data` into a `JSON`, asynchronously
+        /// Parse a provided UTF-8 encoded `Data` into a `JSON`
         ///
         /// ```swift
         /// let data = Data( ... )
         ///
         /// do {
         ///     let json = try await JSON.Parser.parse(data)
+        ///     print(json)
         /// } catch {
-        ///     print(error)
+        ///     print("Couldn't parse data \(data): \(error.localizedDescription)")
         /// }
         /// ```
         ///
@@ -75,7 +53,36 @@ public extension JSON {
         /// - Throws: A `JSON.Error` if the provided `Data` could not be parsed into a ``JSON``
         @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
         public static func parse(_ data: Data) async throws -> JSON {
-            try await Task { try parse(data) }.value
+            try await Task { try parse(data, maximumDepth: .max) }.value
+        }
+
+        /// Parse a provided UTF8-Encoded `Data` into a `JSON`
+        ///
+        /// ```swift
+        /// let data = Data( ... )
+        /// JSON.Parser.parse(data) { data, result in
+        ///     do {
+        ///         let json = try result.get()
+        ///         print(json)
+        ///     } catch {
+        ///         print("Couldn't parse data \(data): \(error.localizedDescription)")
+        ///     }
+        /// }
+        /// ```
+        ///
+        /// - Parameters:
+        ///   - data: UTF-8 encoded data you wish to parse into ``JSON``
+        ///   - completionHandler: A closure used to retrieve the results of the parsing operation
+        public static func parse(
+            _ data: Data,
+            completionHandler: @escaping (Data, Result<JSON, any Swift.Error>) -> Void
+        ) {
+            DispatchQueue.global().async {
+                let result: Result<JSON, any Swift.Error> = .init {
+                    try parse(data, maximumDepth: .max)
+                }
+                completionHandler(data, result)
+            }
         }
 
         /// Parse a provided `String` into a `JSON`
@@ -84,34 +91,10 @@ public extension JSON {
         /// let str = String( ... )
         ///
         /// do {
-        ///     let json = try JSON.Parser.parse(str)
-        /// } catch {
-        ///     print(error)
-        /// }
-        /// ```
-        ///
-        /// - Parameter jsonString: The string you wish to parse into ``JSON``
-        /// - Returns: A ``JSON`` representing the provided UTF-8 encoded data
-        /// - Throws: A `JSON.Error` if the provided `Data` could not be parsed into a ``JSON``
-        public static func parse(_ jsonString: String) throws -> JSON {
-            try jsonString.utf8CString.withUnsafeBufferPointer { nullTerminatedBuffer in
-                try nullTerminatedBuffer.baseAddress!.withMemoryRebound(to: UInt8.self, capacity: nullTerminatedBuffer.count) { utf8Base in
-                    let buffer = UnsafeBufferPointer(start: utf8Base, count: nullTerminatedBuffer.count - 1)
-                    var parser = Parser(input: buffer)
-                    return try parser.parse()
-                }
-            }
-        }
-
-        /// Parse a provided `String` into a `JSON`, asynchronously
-        ///
-        /// ```swift
-        /// let str = String( ... )
-        ///
-        /// do {
         ///     let json = try await JSON.Parser.parse(str)
+        ///     print(json)
         /// } catch {
-        ///     print(error)
+        ///     print("Couldn't parse data \(data): \(error.localizedDescription)")
         /// }
         /// ```
         ///
@@ -120,16 +103,72 @@ public extension JSON {
         /// - Throws: A `JSON.Error` if the provided `Data` could not be parsed into a ``JSON``
         @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
         public static func parse(_ jsonString: String) async throws -> JSON {
-            try await Task { try parse(jsonString) }.value
+            try await Task { try parse(jsonString, maximumDepth: .max) }.value
+        }
+
+        /// Parse a provided `String` into a `JSON`
+        ///
+        /// ```swift
+        /// let str = String( ... )
+        /// JSON.Parser.parse(str) { str, result in
+        ///     do {
+        ///         let json = try result.get()
+        ///         print(json)
+        ///     } catch {
+        ///         print("Couldn't parse data \(data): \(error.localizedDescription)")
+        ///     }
+        /// }
+        /// ```
+        ///
+        /// - Parameters:
+        ///   - jsonString: The string you wish to parse into ``JSON``
+        ///   - completionHandler: A closure used to retrieve the results of the parsing operation
+        public static func parse(
+            _ jsonString: String,
+            completionHandler: @escaping (String, Result<JSON, any Swift.Error>) -> Void
+        ) {
+            DispatchQueue.global().async {
+                let result: Result<JSON, any Swift.Error> = .init {
+                    try parse(jsonString, maximumDepth: .max)
+                }
+                completionHandler(jsonString, result)
+            }
         }
 
         // MARK: - Private
 
-        private init(input: UnsafeBufferPointer<UInt8>) {
+        static func parse(
+            _ data: Data,
+            maximumDepth: Int = 2048
+        ) throws -> JSON {
+            try data.withUnsafeBytes { buffer in
+                let pointer = buffer.bindMemory(to: UInt8.self)
+                var parser = Parser(input: pointer, maximumDepth: maximumDepth)
+                return try parser.parse()
+            }
+        }
+
+        static func parse(
+            _ jsonString: String,
+            maximumDepth: Int = 2048
+        ) throws -> JSON {
+            try jsonString.utf8CString.withUnsafeBufferPointer { nullTerminatedBuffer in
+                try nullTerminatedBuffer.baseAddress!.withMemoryRebound(to: UInt8.self, capacity: nullTerminatedBuffer.count) { utf8Base in
+                    let buffer = UnsafeBufferPointer(start: utf8Base, count: nullTerminatedBuffer.count - 1)
+                    var parser = Parser(input: buffer, maximumDepth: maximumDepth)
+                    return try parser.parse()
+                }
+            }
+        }
+
+        private init(input: UnsafeBufferPointer<UInt8>,
+                     maximumDepth: Int) {
             self.input = input
+            self.maximumDepth = maximumDepth
         }
 
         private let input: UnsafeBufferPointer<UInt8>
+        private let maximumDepth: Int
         private var offset = 0
         private var depth = 0
         private var stringDecodingBuffer = [UInt8]()
