@@ -119,6 +119,7 @@ public extension JSON {
 
         // MARK: - CustomStringConvertible
 
+        /// A textual representation of this instance.
         public var description: String {
             switch self {
             case let .int(int):
@@ -130,6 +131,13 @@ public extension JSON {
 
         // MARK: - Equatable
 
+        /// Returns a Boolean value indicating whether two values are equal.
+        ///
+        /// Equality is the inverse of inequality. For any values a and b, a == b implies that a != b is false.
+        /// - Parameters:
+        ///   - lhs: A value to compare.
+        ///   - rhs: Another value to compare.
+        /// - Returns: `true` if the values are equal. Otherwise, `false`.
         public static func == (lhs: JSON.Number, rhs: JSON.Number) -> Bool {
             switch (lhs, rhs) {
             case let (.int(l), .int(r)):
@@ -145,6 +153,10 @@ public extension JSON {
 
         // MARK: - Hashable
 
+        /// Hashes the essential components of this value by feeding them into the given hasher.
+        ///
+        /// Implement this method to conform to the Hashable protocol. The components used for hashing must be the same as the components compared in your type’s == operator implementation. Call hasher.combine(_:) with each of these components.
+        /// - Parameter hasher: The hasher to use when combining the components of this instance
         public func hash(into hasher: inout Hasher) {
             switch self {
             case let .int(int):

@@ -160,8 +160,8 @@ let array = try json.arrayValue // Always Fails
 
 ### Deserializing JSON
 
-- ``JSON/init(jsonString:)``
 - ``JSON/init(data:)``
+- ``JSON/init(jsonString:)``
 
 ### Subscripting
 
