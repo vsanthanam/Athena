@@ -6,7 +6,7 @@ Serialize ``JSON`` values into a Swift `String` or UTF-8 encoded `Data`
 
 ``JSON`` values can be serialized into Swift `String`, values or into UTF8-Encoded Swift `Data` values.
 
-The easiest way to do this is to use the Athena provide initializers for `String` and `Data`
+The easiest way to do this is to use the Athena-provided initializers for `String` and `Data`
 
 ```swift
 import Athena
@@ -38,7 +38,7 @@ do {
 }
 ```
 
-If you need more control over the way the type is serialized, you can use the static interface from ``JSON/Serializer``.
+If you need more control over the way a ``JSON`` value is serialized, you can use the static interface from ``JSON/Serializer``.
 This API allows you to perform serialization operations asynchronously. It also allows you to supply an options bitmask for further customization.
 
 For example, the following snippet would lead to the subsequent console output:

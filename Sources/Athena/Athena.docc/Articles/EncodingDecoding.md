@@ -6,9 +6,8 @@ Encode & decode your custom Swift types to and from their JSON representations
 
 Athena provides interfaces that allow any Swift type to be easily represented as ``JSON`` and to be initialized from a properly shaped ``JSON`` instance.
 
-To make a Swift type encodable into ``JSON``, make it conform to ``JSONEncodable``.
-
-To make a Swift type decodable from ``JSON``, make it conform to ``JSONDecodable``.
+- To make a Swift type encodable into ``JSON``, make it conform to ``JSONEncodable``.
+- To make a Swift type decodable from ``JSON``, make it conform to ``JSONDecodable``.
 
 You can use the ``JSONCodable`` typealias to declare conformance or type constraints to both protocols together.
 
@@ -92,7 +91,7 @@ Using this implementation, Athena will piggy back on the compiler synthesized im
 
 ### Encoding & Decoding Values
 
-The simplest way to encode a ``JSONEncodable`` value into ``JSON`` is to use generic initializer. For example:
+The simplest way to encode a ``JSONEncodable`` conforming type into ``JSON`` value is to use the ``JSON/init(_:)-3hvss`` initializer. For example:
 
 ```swift
 let myInstance = MyType(value: "SomeString", entries: ["Some", "Entries"])
@@ -126,7 +125,7 @@ let decoded = try MyType(json: json)
 
 #### Decoding a Nested JSON Value
 
-You can combine the standard ``JSON/decode(_:)`` method with the regular subscripting process. For example, given the following JSON, using any of the following options:
+You can combine the standard ``JSON/decode(_:)`` method with the regular subscripting process. For example, given the following JSON, using any of the identical subsequent options:
 
 ```swift
 struct Entry: JSONDecodable {
@@ -167,7 +166,7 @@ let entry: Entry? = json["notableEntry"]
 
 #### Configuring Encode / Decode Operations
 
-If you need more control over the way the type is encoded or decoded, you can use the static interfaces from ``JSON/Encoder`` and ``JSON/Decoder``.
+If you need more control over the way a type is encoded or decoded, you can use the static interfaces from ``JSON/Encoder`` and ``JSON/Decoder``.
 These APIs allow you to perform encoding & decoding operations asynchronously. For example:
 
 ```swift

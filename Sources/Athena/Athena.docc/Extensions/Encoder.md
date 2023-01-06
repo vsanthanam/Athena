@@ -2,7 +2,8 @@
 
 ## Overview
 
-You do not need to initializes instances of this type. It's interface only contains static methods.
+You do not need to initializes instances of this type.
+It's interface only contains static methods.
 
 ## Topics
 
