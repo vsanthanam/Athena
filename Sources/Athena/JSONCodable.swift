@@ -42,6 +42,10 @@ import Foundation
 public protocol JSONEncodable {
 
     /// Produce a representation of the instance in ``JSON``
+    ///
+    /// This method should be used to produce a ``JSON`` representation of the type, suitable for recreating an equivelent instance using the produced value.
+    ///
+    /// For more information on how this method might be implemented, see <doc:EncodingDecoding>.
     /// - Returns: The ``JSON`` representing this instance
     func toJSON() -> JSON
 }
@@ -63,6 +67,11 @@ public protocol JSONEncodable {
 public protocol JSONDecodable {
 
     /// Initialize an instance using a ``JSON`` value
+    ///
+    /// This initializer should be used to produce an instance based on the provided ``JSON``.
+    /// If the provided ``JSON`` is shaped incorrectly or missing data necessary to initialize an instance, it should throw an error.
+    ///
+    /// For more information on how this initializer might be implemented, see <doc:EncodingDecoding>.
     /// - Parameter json: The ``JSON`` value to decode into `Self`
     /// - Throws: An error if an instance cannot be decoded from the provided ``JSON``
     init(json: JSON) throws

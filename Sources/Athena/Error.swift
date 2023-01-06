@@ -28,7 +28,7 @@ import Foundation
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
 public extension JSON {
 
-    /// An error produced when creating, subscripting, traversing, parsing, encoding, decoding or serializing ``JSON`` types
+    /// An error produced when working with ``JSON`` values with Athenas
     struct Error: LocalizedError, CustomNSError, Equatable, Hashable, Sendable, CustomStringConvertible, CustomDebugStringConvertible {
 
         // MARK: - API
@@ -80,18 +80,27 @@ public extension JSON {
 
         // MARK: - CustomStringConvertible
 
+        /// A textual representation of this instance.
         public var description: String {
             message
         }
 
         // MARK: - CustomDebugStringConvertible
 
+        /// A type with a customized textual representation suitable for debugging purposes.
         public var debugDescription: String {
             [callsite, message].joined(separator: " - ")
         }
 
         // MARK: - Equatable
 
+        /// Returns a Boolean value indicating whether two values are equal.
+        ///
+        /// Equality is the inverse of inequality. For any values a and b, a == b implies that a != b is false.
+        /// - Parameters:
+        ///   - lhs: A value to compare.
+        ///   - rhs: Another value to compare.
+        /// - Returns: `true` if the values are equal. Otherwise, `false`.
         public static func == (lhs: JSON.Error, rhs: JSON.Error) -> Bool {
             lhs.message == rhs.message
                 && lhs.file.description == rhs.file.description
@@ -102,6 +111,10 @@ public extension JSON {
 
         // MARK: - Hashable
 
+        /// Hashes the essential components of this value by feeding them into the given hasher.
+        ///
+        /// Implement this method to conform to the Hashable protocol. The components used for hashing must be the same as the components compared in your type’s == operator implementation. Call hasher.combine(_:) with each of these components.
+        /// - Parameter hasher: The hasher to use when combining the components of this instance
         public func hash(into hasher: inout Hasher) {
             hasher.combine(message)
             hasher.combine(file.description)
@@ -128,7 +141,7 @@ public extension JSON {
             self.column = column
         }
 
-        private static let defaultErrorMessage = "The operation couldn't be completed."
+        static let defaultErrorMessage = "The operation couldn't be completed."
 
         private let message: String
         private let file: StaticString

@@ -39,7 +39,7 @@ do {
 ```
 
 If you need more control over the way the type is serialized, you can use the static interface from ``JSON/Serializer``.
-This API allow you to perform serialization operations asynchronously. It also allows you to supply an options bitmask for further customization.
+This API allows you to perform serialization operations asynchronously. It also allows you to supply an options bitmask for further customization.
 
 For example, the following snippet would lead to the subsequent console output:
 

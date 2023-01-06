@@ -28,7 +28,7 @@ let null = JSON.Literal()
 
 ``JSON/Literal`` also conforms to `ExpressibleByBooleanLiteral` and `ExpressibleByNilLiteral`, so you could further simplify the above code like this:
 
-```
+```swift
 let bool: JSON.Literal = true
 let null: JSON.Literal = nil
 ```

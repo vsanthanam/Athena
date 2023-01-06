@@ -54,12 +54,16 @@ public extension JSON {
 
         /// Retrieve the the value as a `Bool`
         ///
+        /// Use this throwing var to retieve the literal as `Bool`, if possible. For example:
+        ///
         /// ```swift
+        /// import Athena
+        ///
         /// let bool = Literal.true
         /// let null = Literal.null
         ///
         /// let val1 = try bool.boolValue // Succeeds
-        /// let val2 = try null.boolValue // Fails
+        /// let val2 = try null.boolValue // Throws
         /// ```
         ///
         /// - Throws: A ``JSON/Error`` if the literall cannot be expressed as a `Bool`
@@ -123,6 +127,7 @@ public extension JSON {
 
         // MARK: - CustomStringConvertible
 
+        /// A textual representation of this instance.
         public var description: String {
             switch self {
             case .true:
