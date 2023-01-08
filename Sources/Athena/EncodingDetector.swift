@@ -32,7 +32,7 @@ public extension JSON.Deserializer {
         // MARK: - API
 
         /// The Unicode encodings looked for during detection
-        public enum Encoding {
+        public enum Encoding: Equatable, Hashable, Sendable, CustomStringConvertible {
 
             /// UTF-8
             case utf8
@@ -61,7 +61,7 @@ public extension JSON.Deserializer {
         /// This function initially looks for a Byte Order Mark in the following form:
         ///
         /// Bytes                    | Encoding
-        /// ---------------------|---------------
+        /// -------------------------|---------------
         /// `00 00 FE FF` | UTF-32BE
         /// `FF FE 00 00` | UTF-32LE
         /// `FE FF`              | UTF-16BE
@@ -74,7 +74,7 @@ public extension JSON.Deserializer {
         /// it is possible to determine whether an octet stream is UTF-8, UTF-16 (BE or LE), or UTF-32 (BE or LE) by looking at the pattern of nulls in the first four octets using the following table
         ///
         /// First 4 Octets         | Encoding
-        /// ----------------------|----------------
+        /// --------------------------|----------------
         /// `00 00 00 xx`  | UTF-32BE
         /// `00 xx 00 xx`  | UTF-16BE
         /// `xx 00 00 00`  | UTF-32LE
@@ -136,4 +136,24 @@ public extension JSON.Deserializer {
             }
         }
     }
+}
+
+public extension JSON.Deserializer.EncodingDetector.Encoding {
+
+    /// A textual representation of this instance.
+    var description: String {
+        switch self {
+        case .utf8:
+            return "UTF-8"
+        case .utf16LE:
+            return "UTF-16 (Little Endian)"
+        case .utf16BE:
+            return "UTF-16 (Big Endian)"
+        case .utf32LE:
+            return "UTF-32 (Little Endian)"
+        case .utf32BE:
+            return "UTF-32 (Big Endian)"
+        }
+    }
+
 }

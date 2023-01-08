@@ -18,8 +18,8 @@ let jsonFromData = try JSON(data: utf8)
 let jsonFromString = try JSON(jsonString: jsonString)
 ```
 
-If you need more control over the way the type is serialized, you can use the static interface from ``JSON/Deserializer``.
-This API allows you to perform deserialization operations asynchronously. It also allows you to supply an options bitmask for further customization.
+If you need more control over the way the data is deserialized, you can use the static interface from ``JSON/Deserializer``.
+These APIs allows you to perform deserialization operations asynchronously. They also allows you to supply an options bitmask for further customization.
 
 For example:
 
