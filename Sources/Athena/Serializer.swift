@@ -223,6 +223,7 @@ public extension Data {
     ///
     /// ```swift
     /// import Athena
+    ///
     /// let json: JSON = ["key": "value"]
     /// let data = try Data(serializing: json)
     /// ```
@@ -238,6 +239,16 @@ public extension Data {
 public extension String {
 
     /// Initialize a `String` value be serializing a ``JSON`` value
+    ///
+    /// Use this initializer to serialize a ``JSON`` value into a properly formatter JSON string. For example:
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let json: JSON = ["key": "value"]
+    /// let string = try String(serializing: json)
+    /// ```
+    ///
     /// - Parameter json: The ``JSON`` value to serialize
     /// - Throws: A ``JSON/Error`` if the serialization fails
     init(serializing json: JSON) throws {
