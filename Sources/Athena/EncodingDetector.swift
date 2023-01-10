@@ -32,7 +32,7 @@ public extension JSON.Deserializer {
         // MARK: - API
 
         /// The Unicode encodings looked for during detection
-        public enum Encoding {
+        public enum Encoding: Equatable, Hashable, Sendable, CustomStringConvertible {
 
             /// UTF-8
             case utf8
@@ -136,4 +136,24 @@ public extension JSON.Deserializer {
             }
         }
     }
+}
+
+public extension JSON.Deserializer.EncodingDetector.Encoding {
+
+    /// A textual representation of this instance.
+    var description: String {
+        switch self {
+        case .utf8:
+            return "UTF-8"
+        case .utf16LE:
+            return "UTF-16 (Little Endian)"
+        case .utf16BE:
+            return "UTF-16 (Big Endian)"
+        case .utf32LE:
+            return "UTF-32 (Little Endian)"
+        case .utf32BE:
+            return "UTF-32 (Big Endian)"
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-# Serializing JSON into Data
+# Serializing JSON Values into Data
 
 Serialize ``JSON`` values into a Swift `String` or UTF-8 encoded `Data`
 
@@ -39,7 +39,7 @@ do {
 ```
 
 If you need more control over the way a ``JSON`` value is serialized, you can use the static interface from ``JSON/Serializer``.
-This API allows you to perform serialization operations asynchronously. It also allows you to supply an options bitmask for further customization.
+These APIs allows you to perform serialization operations asynchronously. They also allows you to supply an options bitmask for further customization.
 
 For example, the following snippet would lead to the subsequent console output:
 

@@ -676,7 +676,8 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
 
     /// A type with a customized textual representation suitable for debugging purposes.
     public var debugDescription: String {
-        toPrettyString()
+        let string = try? JSON.Serializer.stringify(self, options: [.fragmentsAllowed])
+        return string ?? description
     }
 
     // MARK: - ExpressibleByArrayLiteral
@@ -814,91 +815,4 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         self.init()
     }
 
-    // MARK: - Private
-
-    private func toEscapedString() -> String {
-        switch self {
-        case let .array(array):
-            return "["
-                + array
-                .map { json in json.toEscapedString() }
-                .joined(separator: ",")
-                + "]"
-        case let .object(dictionary):
-            return "{"
-                + dictionary
-                .enumerated()
-                .map(\.element)
-                .map { pair in
-                    let (key, value) = pair
-                    return [
-                        key,
-                        value.toEscapedString()
-                    ]
-                    .joined(separator: ":")
-                }
-                .joined(separator: ",")
-                + "}"
-        case let .literal(literal):
-            switch literal {
-            case .true:
-                return "true"
-            case .false:
-                return "false"
-            case .null:
-                return "null"
-            }
-        case let .number(number):
-            return number.description
-        case let .string(string):
-            return "\"" + string + "\""
-
-        }
-    }
-
-    private func toPrettyString(tabs: Int = 0) -> String {
-        let tabString = Array(0 ..< tabs)
-            .reduce("") { prev, _ in
-                prev + "\t"
-            }
-        switch self {
-        case let .array(array):
-            return "["
-                + array
-                .map { json in json.toPrettyString(tabs: tabs) }
-                .joined(separator: ", ")
-                + "]"
-        case let .object(dictionary):
-            return "{\n"
-                + dictionary
-                .enumerated()
-                .map(\.element)
-                .map { pair in
-                    let (key, value) = pair
-                    let kvp = [
-                        key.tabbedString(tabs: tabs + 1),
-                        value.toPrettyString(tabs: tabs + 1)
-                    ]
-                    .joined(separator: ": ")
-                    return tabString + kvp
-                }
-                .joined(separator: ",\n")
-                + "\n"
-                + tabString.dropFirst()
-                + "}"
-        case let .number(number):
-            return number.description
-        case let .string(string):
-            return "\"" + string + "\""
-        case let .literal(literal):
-            switch literal {
-            case .true:
-                return "true"
-            case .false:
-                return "false"
-            case .null:
-                return "null"
-            }
-        }
-    }
 }

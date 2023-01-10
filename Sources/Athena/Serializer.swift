@@ -160,56 +160,105 @@ public extension JSON {
         private let json: JSON
 
         private func serializeData() throws -> Data {
-            func buildNSObject(_ json: JSON, using options: Options) -> Any {
-                switch json {
-                case let .array(array):
-                    return array.map { json in buildNSObject(json, using: options) }
-                case let .object(dictionary):
-                    var cocoa = [String: Any](minimumCapacity: dictionary.count)
-                    for (key, json) in dictionary {
-                        if json != nil || (json == nil && !options.contains(.nullSkipsKey)) {
-                            cocoa[key] = buildNSObject(json, using: options)
-                        }
-                    }
-                    return cocoa
-                case let .number(number):
-                    switch number {
-                    case let .int(int):
-                        return NSNumber(value: int)
-                    case let .double(double):
-                        return NSNumber(value: double)
-                    }
-                case let .string(string):
-                    return string
-                case let .literal(literal):
-                    switch literal {
-                    case .true:
-                        return NSNumber(value: true)
-                    case .false:
-                        return NSNumber(value: false)
-                    case .null:
-                        return NSNull()
-                    }
-                }
+            let string = try serializeString()
+            guard let data = string.data(using: .utf8) else {
+                throw JSON.Error()
             }
-
-            let serializable = buildNSObject(json, using: options)
-            guard JSONSerialization.isValidJSONObject(serializable) else {
-                throw Error()
-            }
-            do {
-                return try JSONSerialization.data(withJSONObject: serializable, options: options.writingOptions)
-            } catch {
-                throw Error()
-            }
+            return data
         }
 
         private func serializeString() throws -> String {
-            let data = try serializeData()
-            guard let string = String(data: data, encoding: .utf8) else {
-                throw Error("Couldn't serialize data into a UTF8 encoded string")
+            guard options.contains(.fragmentsAllowed) || (try? json.dictionaryValue) != nil else {
+                throw JSON.Error()
             }
-            return string
+            if options.contains(.prettyPrinted) {
+                return prettyString(from: json)
+            } else {
+                return regularString(from: json)
+            }
+        }
+
+        private func regularString(from json: JSON) -> String {
+            switch json {
+            case let .array(array):
+                return "["
+                    + array
+                    .map { json in regularString(from: json) }
+                    .joined(separator: ",")
+                    + "]"
+            case let .object(dictionary):
+                return "{"
+                    + dictionary
+                    .enumeratedElements(withOptions: options)
+                    .map { pair in
+                        let (key, value) = pair
+                        return [
+                            key,
+                            regularString(from: value)
+                        ]
+                        .joined(separator: ":")
+                    }
+                    .joined(separator: ",")
+                    + "}"
+            case let .literal(literal):
+                switch literal {
+                case .true:
+                    return "true"
+                case .false:
+                    return "false"
+                case .null:
+                    return "null"
+                }
+            case let .number(number):
+                return number.description
+            case let .string(string):
+                return "\"" + string + "\""
+            }
+        }
+
+        private func prettyString(from json: JSON, tabs: Int = 0) -> String {
+            let tabString = Array(0 ..< tabs)
+                .reduce("") { prev, _ in
+                    prev + "\t"
+                }
+            switch json {
+            case let .array(array):
+                return "["
+                    + array
+                    .map { json in prettyString(from: json) }
+                    .joined(separator: ", ")
+                    + "]"
+            case let .object(dictionary):
+                return "{\n"
+                    + dictionary
+                    .enumeratedElements(withOptions: options)
+                    .map { pair in
+                        let (key, value) = pair
+                        let kvp = [
+                            key.tabbedString(tabs: tabs + 1),
+                            prettyString(from: value, tabs: tabs + 1)
+                        ]
+                        .joined(separator: ": ")
+                        return tabString + kvp
+                    }
+                    .joined(separator: ",\n")
+                    + "\n"
+                    + tabString.dropFirst()
+                    + "}"
+            case let .number(number):
+                return number.description
+            case let .string(string):
+                return "\"" + string + "\""
+            case let .literal(literal):
+                switch literal {
+                case .true:
+                    return "true"
+                case .false:
+                    return "false"
+                case .null:
+                    return "null"
+                }
+            }
         }
     }
 }
@@ -231,7 +280,7 @@ public extension Data {
     /// - Parameter json: The ``JSON`` value to serialize
     /// - Throws: A ``JSON/Error`` if the serialization fails
     init(serializing json: JSON) throws {
-        self = try json.serialize()
+        self = try JSON.Serializer.serialize(json)
     }
 }
 
@@ -252,7 +301,30 @@ public extension String {
     /// - Parameter json: The ``JSON`` value to serialize
     /// - Throws: A ``JSON/Error`` if the serialization fails
     init(serializing json: JSON) throws {
-        self = try json.stringify()
+        self = try JSON.Serializer.stringify(json)
+    }
+
+}
+
+private extension Dictionary where Key == String, Value == JSON {
+
+    func enumeratedElements(withOptions options: JSON.Serializer.Options) -> [Element] {
+        var sequence = enumerated()
+            .map(\.element)
+        if options.contains(.sortedKeys) {
+            sequence = sequence.sorted { leftPair, rightPair in
+                let (leftKey, _) = leftPair
+                let (rightKey, _) = rightPair
+                return leftKey < rightKey
+            }
+        }
+        if options.contains(.nullSkipsKey) {
+            sequence = sequence.filter { pair in
+                let (_, value) = pair
+                return value != .literal(.null)
+            }
+        }
+        return sequence
     }
 
 }
