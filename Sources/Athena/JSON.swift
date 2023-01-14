@@ -34,6 +34,9 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     /// A ``JSON`` value containing the number zero.
     public static let zero: JSON = 0
 
+    /// A ``JSON`` value containing `null`
+    public static let null: JSON = .literal(.null)
+
     // MARK: - Initializers
 
     /// Initialize a ``JSON`` by encoding a ``JSONEncodable`` type
@@ -344,11 +347,11 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         self = dictionary.map(JSON.init) ?? nil
     }
 
-    /// Initialize a ``JSON`` value that contains `null`
+    /// Initialize a ``JSON`` value that contains an empty object
     ///
-    /// Use this initializer to create a ``JSON`` value that contains `null`.
+    /// Use this initializer to create a ``JSON`` value that contains an empty JSON object
     public init() {
-        self = .literal(.null)
+        self = .object([:])
     }
 
     // MARK: - API
@@ -695,7 +698,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///
     /// - Parameter elements: A list of elements of the new set.
     public init(arrayLiteral elements: ArrayLiteralElement...) {
-        self.init(elements)
+        self = .array(elements)
     }
 
     // MARK: - ExpressibleByDictionaryLiteral
@@ -740,7 +743,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///
     /// - Parameter value: The value of the new instance.
     public init(booleanLiteral value: Bool) {
-        self.init(value)
+        self = .literal(.init(value))
     }
 
     // MARK: - ExpressibleByIntegerLiteral
@@ -759,7 +762,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///
     /// - Parameter value: The value to create.
     public init(integerLiteral value: Int) {
-        self.init(value)
+        self = .number(.int(value))
     }
 
     // MARK: - ExpressibleByFloatLiteral
@@ -778,7 +781,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///
     /// - Parameter value: The value to create.
     public init(floatLiteral value: Double) {
-        self.init(value)
+        self = .number(.double(value))
     }
 
     // MARK: - ExpressibleByStringLiteral
@@ -797,7 +800,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///
     /// - Parameter value: The value of the new instance.
     public init(stringLiteral value: String) {
-        self.init(value)
+        self = .string(value)
     }
 
     // MARK: - ExpressibleByNilLiteral
@@ -811,7 +814,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     /// ```
     /// In this example, the assignment to the `null` constant calls this nill literal initialize behind the scenes.
     public init(nilLiteral: Void) {
-        self.init()
+        self = .literal(.null)
     }
 
     // MARK: - Private

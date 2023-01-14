@@ -91,7 +91,7 @@ let null = JSON.literal(.null)
 let string = JSON("hello")
 let int = JSON(42)
 let bool = JSON(true)
-let null = JSON()
+let null = JSON.null
 ```
 
 ``JSON`` conforms to many of Swift's `ExpressibleByXLiteral` protocols, which means you could further simplify the above snippet like this:
