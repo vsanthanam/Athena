@@ -38,11 +38,7 @@ public extension JSON {
         /// Create a ``JSON/Number`` a `Double`
         /// - Parameter value: The double
         public init(_ value: Double) {
-            if value.truncatingRemainder(dividingBy: 1) == 0 {
-                self = .int(Int(value))
-            } else {
-                self = .double(value)
-            }
+            self = .double(value)
         }
 
         // MARK: - API
@@ -54,29 +50,33 @@ public extension JSON {
         case double(Double)
 
         /// Retrieve the value as an `Int`, if possible.
-        /// - Throws: a ``JSON/Error`` if the value cannot be expressed as an `Int` without losing precision
+        /// - Throws: a ``JSON/Error`` if the value is not an int
         public var intValue: Int {
             get throws {
                 switch self {
                 case let .int(int):
                     return int
-                case let .double(double):
-                    guard double.truncatingRemainder(dividingBy: 1) == 0 else {
-                        throw Error()
-                    }
-                    return Int(double)
+                case .double:
+                    throw Error()
                 }
             }
         }
 
-        /// Retrieve the value as a `Double`
+        /// Retrieve the value as an `Double`, if possible.
+        /// - Throws: a ``JSON/Error`` if the value is not a double
         public var doubleValue: Double {
-            switch self {
-            case let .int(int):
-                return Double(int)
-            case let .double(double):
-                return double
+            get throws {
+                switch self {
+                case .int:
+                    throw Error()
+                case let .double(double):
+                    return double
+                }
             }
+        }
+
+        public func decode<T>(_ type: T.Type = T.self) throws -> T where T: NumberDecodable {
+            try T(jsonNumber: self)
         }
 
         // MARK: - ExpressibleByIntegerLiteral

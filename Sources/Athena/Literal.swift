@@ -92,6 +92,10 @@ public extension JSON {
             }
         }
 
+        public func decode<T>(_ type: T.Type = T.self) throws -> T where T: LiteralDecodable {
+            try T(jsonLiteral: self)
+        }
+
         // MARK: - ExpressibleByBooleanLiteral
 
         /// A type that represents a Boolean literal, such as `Bool`.
