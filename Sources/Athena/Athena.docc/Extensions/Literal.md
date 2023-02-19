@@ -56,3 +56,8 @@ let null: JSON.Literal = nil
 - ``JSON/Literal/BooleanLiteralType``
 - ``JSON/Literal/init(booleanLiteral:)``
 - ``JSON/Literal/init(nilLiteral:)``
+
+### Decoding 
+
+- ``decode(_:)``
+- ``LiteralDecodable``

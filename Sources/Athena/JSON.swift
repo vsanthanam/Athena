@@ -82,7 +82,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     /// - Parameter value: The conforming type
     public init<T>(_ value: T?) where T: JSONEncodable {
         guard let value else {
-            self = nil
+            self = .null
             return
         }
         self = .init(value)
@@ -584,7 +584,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
 
     /// Decode the value into a ``JSONDecodable`` type
     ///
-    /// Use this methode to decode this ``JSON`` instance into its ``JSONDecodable`` conforming type. For example:
+    /// Use this methode to decode this ``JSON`` instance into a ``JSONDecodable`` conforming type. For example:
     ///
     /// ```swift
     /// import Athena
@@ -640,14 +640,14 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     /// - Parameter subscript: The subscript
     /// - Returns: The value at subscript, or ``JSON/Literal/null`` if no such value exists
     public subscript<T>(_ subscript: T) -> JSON where T: JSONSubscript {
-        (try? value(at: `subscript`)) ?? nil
+        (try? value(at: `subscript`)) ?? .null
     }
 
     /// Retrive the value at the provided path
     /// - Parameter path: The path
     /// - Returns: The value at path, or ``JSON/Literal/null`` if no such value exists
     public subscript(_ path: any JSONSubscript ...) -> JSON {
-        (try? value(at: path)) ?? nil
+        (try? value(at: path)) ?? .null
     }
 
     /// Decode the value at the provided subscript

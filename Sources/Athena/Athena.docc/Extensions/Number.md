@@ -74,3 +74,8 @@ let isEqual = int == double
 - ``init(integerLiteral:)``
 - ``FloatLiteralType``
 - ``init(floatLiteral:)``
+
+### Decoding 
+
+- ``decode(_:)``
+- ``NumberDecodable``

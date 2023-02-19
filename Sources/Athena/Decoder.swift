@@ -29,8 +29,6 @@ import Foundation
 public extension JSON {
 
     /// A type used to decode ``JSONDecodable``conforming types from their ``JSON`` representations
-    ///
-
     struct Decoder {
 
         /// Synchronously decode a ``JSONDecodable`` type from ``JSON``
