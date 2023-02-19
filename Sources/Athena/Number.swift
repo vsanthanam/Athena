@@ -74,7 +74,7 @@ public extension JSON {
                 }
             }
         }
-        
+
         /// Decode the value into a ``NumberDecodable`` type
         ///
         /// Use this methode to decode this ``JSON/Number`` instance into a ``NumberDecodable`` conforming type. For example:
@@ -91,7 +91,7 @@ public extension JSON {
         /// ```swift
         /// let int: Int = try number.decode()
         /// ```
-    
+        ///
         /// - Parameter type: The type you wish to decode into. This argument can be inferred from the call site.
         /// - Returns: The decoded ``JSON/Number``
         /// - Throws: A ``JSON/Error`` if the value cannot be decoded successfully

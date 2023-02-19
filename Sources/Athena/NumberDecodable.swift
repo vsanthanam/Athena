@@ -26,7 +26,7 @@
 /// A type that can decode itself from an external ``JSON/Number`` representation.
 ///
 /// You need not implement this protocol yourself.
-/// 
+///
 /// Athena includes conformance to ``NumberDecodable`` for the following Swift types:
 ///  - `Int`
 ///  - `Double`

@@ -26,7 +26,7 @@
 /// A type that can decode itself from an external ``JSON/Literal`` representation.
 ///
 /// You need not implement this protocol yourself.
-/// 
+///
 /// Athena includes conformance to ``LiteralDecodable`` for the following Swift types:
 ///  - `Bool`
 ///  - `String`

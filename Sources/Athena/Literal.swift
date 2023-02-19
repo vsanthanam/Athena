@@ -108,7 +108,7 @@ public extension JSON {
         /// ```swift
         /// let bool: Bool = try literal.decode()
         /// ```
-    
+        ///
         /// - Parameter type: The type you wish to decode into. This argument can be inferred from the call site.
         /// - Returns: The decoded ``JSON/Literal``
         /// - Throws: A ``JSON/Error`` if the value cannot be decoded successfully
