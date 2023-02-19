@@ -1,4 +1,4 @@
-# Athena [WIP]
+# Athena
 
 [![MIT License](https://img.shields.io/github/license/vsanthanam/Athena)](https://github.com/vsanthanam/Athena/blob/main/LICENSE)
 [![Package Releases](https://img.shields.io/github/v/release/vsanthanam/Athena)](https://github.com/vsanthanam/Athena/releases)
