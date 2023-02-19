@@ -27,7 +27,7 @@
 public extension JSON {
 
     /// A Swift represention of a JSON number, either an `Int` or a `Double`
-    enum Number: Equatable, Hashable, Sendable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral, CustomStringConvertible {
+    enum Number: Equatable, Hashable, Sendable, Comparable, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral, CustomStringConvertible {
 
         /// Create a ``JSON/Number`` from an `Int`
         /// - Parameter value: The integer
@@ -74,7 +74,27 @@ public extension JSON {
                 }
             }
         }
-
+        
+        /// Decode the value into a ``NumberDecodable`` type
+        ///
+        /// Use this methode to decode this ``JSON/Number`` instance into a ``NumberDecodable`` conforming type. For example:
+        ///
+        /// ```swift
+        /// import Athena
+        ///
+        /// let number = JSON.Number( ... )
+        /// let int = try number.decode(Int.self)
+        /// ```
+        ///
+        /// You can also infer the `type` argument from the type context of the call site. For example:
+        ///
+        /// ```swift
+        /// let int: Int = try number.decode()
+        /// ```
+    
+        /// - Parameter type: The type you wish to decode into. This argument can be inferred from the call site.
+        /// - Returns: The decoded ``JSON/Number``
+        /// - Throws: A ``JSON/Error`` if the value cannot be decoded successfully
         public func decode<T>(_ type: T.Type = T.self) throws -> T where T: NumberDecodable {
             try T(jsonNumber: self)
         }
@@ -126,48 +146,6 @@ public extension JSON {
                 return int.description
             case let .double(double):
                 return double.description
-            }
-        }
-
-        // MARK: - Equatable
-
-        /// Returns a Boolean value indicating whether two values are equal.
-        ///
-        /// Equality is the inverse of inequality. For any values a and b, a == b implies that a != b is false.
-        /// - Parameters:
-        ///   - lhs: A value to compare.
-        ///   - rhs: Another value to compare.
-        /// - Returns: `true` if the values are equal. Otherwise, `false`.
-        public static func == (lhs: JSON.Number, rhs: JSON.Number) -> Bool {
-            switch (lhs, rhs) {
-            case let (.int(l), .int(r)):
-                return l == r
-            case let (.double(l), .double(r)):
-                return l == r
-            case let (.int(l), .double(r)):
-                return Double(l) == r
-            case let (.double(l), .int(r)):
-                return l == Double(r)
-            }
-        }
-
-        // MARK: - Hashable
-
-        /// Hashes the essential components of this value by feeding them into the given hasher.
-        ///
-        /// Implement this method to conform to the Hashable protocol. The components used for hashing must be the same as the components compared in your type’s == operator implementation. Call hasher.combine(_:) with each of these components.
-        /// - Parameter hasher: The hasher to use when combining the components of this instance
-        public func hash(into hasher: inout Hasher) {
-            switch self {
-            case let .int(int):
-                hasher.combine(int)
-            case let .double(double):
-                if double.truncatingRemainder(dividingBy: 1) == 0 {
-                    let int = Int(double)
-                    hasher.combine(int)
-                } else {
-                    hasher.combine(double)
-                }
             }
         }
     }

@@ -24,6 +24,12 @@
 // SOFTWARE.
 
 /// A type that can decode itself from an external ``JSON/Literal`` representation.
+///
+/// You need not implement this protocol yourself.
+/// 
+/// Athena includes conformance to ``LiteralDecodable`` for the following Swift types:
+///  - `Bool`
+///  - `String`
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
 public protocol LiteralDecodable {
 
@@ -41,5 +47,19 @@ public protocol LiteralDecodable {
 extension Bool: LiteralDecodable {
     public init(jsonLiteral: JSON.Literal) throws {
         self = try jsonLiteral.boolValue
+    }
+}
+
+@available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
+extension String: LiteralDecodable {
+    public init(jsonLiteral: JSON.Literal) throws {
+        switch jsonLiteral {
+        case .true:
+            self = "true"
+        case .false:
+            self = "false"
+        case .null:
+            self = "null"
+        }
     }
 }

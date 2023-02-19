@@ -584,7 +584,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
 
     /// Decode the value into a ``JSONDecodable`` type
     ///
-    /// Use this methode to decode this ``JSON`` instance into its ``JSONDecodable`` conforming type. For example:
+    /// Use this methode to decode this ``JSON`` instance into a ``JSONDecodable`` conforming type. For example:
     ///
     /// ```swift
     /// import Athena

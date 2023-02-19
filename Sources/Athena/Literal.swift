@@ -92,6 +92,26 @@ public extension JSON {
             }
         }
 
+        /// Decode the value into a ``LiteralDecodable`` type
+        ///
+        /// Use this methode to decode this ``JSON/Literal`` instance into a ``LiteralDecodable`` conforming type. For example:
+        ///
+        /// ```swift
+        /// import Athena
+        ///
+        /// let literal = JSON.Literal( ... )
+        /// let bool = try literal.decode(Int.self)
+        /// ```
+        ///
+        /// You can also infer the `type` argument from the type context of the call site. For example:
+        ///
+        /// ```swift
+        /// let bool: Bool = try literal.decode()
+        /// ```
+    
+        /// - Parameter type: The type you wish to decode into. This argument can be inferred from the call site.
+        /// - Returns: The decoded ``JSON/Literal``
+        /// - Throws: A ``JSON/Error`` if the value cannot be decoded successfully
         public func decode<T>(_ type: T.Type = T.self) throws -> T where T: LiteralDecodable {
             try T(jsonLiteral: self)
         }
@@ -119,7 +139,7 @@ public extension JSON {
 
         /// Creates an instance initialized with nil.
         ///
-        /// Do not call this initializer directly. Instead, initialize a variable or constnant using a `nil` literal. You can use a `nil` literal anywhere a ``JSON/Literal`` is expected by the type context. For example:
+        /// Do not call this initializer directly. Instead, initialize a variable or constant using a `nil` literal. You can use a `nil` literal anywhere a ``JSON/Literal`` is expected by the type context. For example:
         ///
         /// ```swift
         /// let null: JSON.Literal = nil
