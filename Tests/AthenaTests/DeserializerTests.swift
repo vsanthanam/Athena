@@ -1,5 +1,5 @@
 // Athena
-// ParserTests.swift
+// DeserializerTests.swift
 //
 // MIT License
 //
@@ -27,14 +27,14 @@
 import XCTest
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
-final class ParserTests: XCTestCase {
+final class DeserializerTests: XCTestCase {
 
     func test_parser_throws_an_error_for_an_empty_data() {
         do {
             _ = try JSON.Deserializer.deserialize("")
             XCTFail("Unexpectedly did not throw an error")
         } catch {
-            print(error)
+            return
         }
     }
 
@@ -43,11 +43,10 @@ final class ParserTests: XCTestCase {
         let data = Data(bytes: hex, count: hex.count)
 
         do {
-            let json = try JSON.Deserializer.deserialize(data)
-            print(json)
+            _ = try JSON.Deserializer.deserialize(data)
             XCTFail("Unexpectedly did not throw an error")
         } catch {
-            print(error)
+            return
         }
     }
 
@@ -100,7 +99,7 @@ final class ParserTests: XCTestCase {
             _ = try JSON.Deserializer.deserialize("null   true")
             XCTFail()
         } catch {
-            print(error)
+            return
         }
     }
 
@@ -139,7 +138,7 @@ final class ParserTests: XCTestCase {
                 let value = try JSON.Deserializer.deserialize(s)
                 XCTFail("Unexpectedly parsed \(s) as \(value)")
             } catch {
-                print(error)
+                return
             }
         }
     }
@@ -245,7 +244,7 @@ final class ParserTests: XCTestCase {
 
         do {
             let json = try JSON.Deserializer.deserialize(jsonString)
-            XCTAssertEqual(json["floatingPointString"], Int(integerString))
+            XCTAssertEqual(try! json["floatingPointString"].decode(), Int(integerString))
         } catch {
             XCTFail("Integer from floating point String does not match without loosing precision \(error)")
         }
@@ -377,7 +376,7 @@ final class ParserTests: XCTestCase {
             _ = try JSON.Deserializer.deserialize(invalidJSONString)
             XCTFail("Unexpectedly parsed invalid unicode escape")
         } catch {
-            print(error)
+            return
         }
     }
 }

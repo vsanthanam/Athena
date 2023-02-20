@@ -87,6 +87,15 @@ let innovator = JSON( ... )
 let firstProductName: JSON = innovator["inventions", 0, "name"]
 ```
 
+You can also use subscripts to mutate a JSON value
+
+```swift
+import Athena
+
+try innovator.setValue("Steven", forSubscript: "first_name")
+innovator["middle_name"] = "Paul"
+```
+
 ## Topics
 
 ### Protocols
