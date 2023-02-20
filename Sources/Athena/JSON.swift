@@ -582,6 +582,123 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         return try value(for: `subscript`).value(at: Array(path.dropFirst()))
     }
 
+    /// Insert a value at the provided subscript
+    ///
+    /// Only JSON objects and JSON arrays can be subscripted.
+    /// JSON objects can be subscripted using strings, while JSON arrays can be subscripted using integers
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let json = [
+    ///     "greek_letters": [
+    ///         "alpha",
+    ///         "beta",
+    ///         "gamma"
+    ///     ]
+    /// ]
+    ///
+    /// let nextLetters: JSON = ["delta, epsilon, zeta"]
+    /// try json.setValue(nextLetters, forSubscript: "greek_letters")
+    /// ```
+    ///
+    /// For more information, see <doc:Subscripting>.
+    ///
+    /// - Parameters:
+    ///   - value: The value you wish to insert
+    ///   - subscript: The subscript
+    /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid.
+    public mutating func setValue<T>(_ value: JSON, forSubscript subscript: T) throws where T: JSONSubscript {
+        switch self {
+        case var .array(array):
+            try `subscript`.setValue(value, in: &array)
+            self = .array(array)
+        case var .object(dictionary):
+            try `subscript`.setValue(value, in: &dictionary)
+            self = .object(dictionary)
+        case .literal, .number, .string:
+            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)", .subscript)
+        }
+    }
+
+    /// Insert a value at the provided path
+    ///
+    /// Only JSON objects and JSON arrays can be subscripted.
+    /// JSON objects can be subscripted using strings, while JSON arrays can be subscripted using integers
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let json = [
+    ///     "greek_letters": [
+    ///         "alpha",
+    ///         "beta",
+    ///         "gamma"
+    ///     ]
+    /// ]
+    ///
+    /// try json.setValue("delta", atPath: "greek_letters", 0)
+    /// ```
+    ///
+    /// For more information, see <doc:Subscripting>.
+    ///
+    /// - Parameters:
+    ///   - value: The value you wish to insert
+    ///   - path: The path as expressed by an ordered list of variadic suscript arguments
+    /// - Throws: A ``JSON/Error`` if the provided path is invalid.
+    public mutating func setValue(_ value: JSON, atPath path: any JSONSubscript ...) throws {
+        try setValue(value, atPath: path)
+    }
+
+    /// Insert a value at the provided path
+    ///
+    /// Only JSON objects and JSON arrays can be subscripted.
+    /// JSON objects can be subscripted using strings, while JSON arrays can be subscripted using integers
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let json = [
+    ///     "greek_letters": [
+    ///         "alpha",
+    ///         "beta",
+    ///         "gamma"
+    ///     ]
+    /// ]
+    ///
+    /// let path: JSONPath = ["greek_letters", 1]
+    /// try json.setValue("epsilon", atPath: path)
+    /// ```
+    ///
+    /// For more information, see <doc:Subscripting>.
+    ///
+    /// - Parameters:
+    ///   - value: The value you wish to insert
+    ///   - path: The path as expressed by an array of subscript elements
+    /// - Throws: A ``JSON/Error`` if the provided path is invalid.
+    public mutating func setValue(_ value: JSON, atPath path: JSONPath) throws {
+        guard let `subscript` = path.first else {
+            self = value
+            return
+        }
+        if path.count > 1 {
+            var updated = try self.value(at: `subscript`)
+            try updated.setValue(value, atPath: Array(path.dropFirst()))
+            try setValue(updated, atPath: `subscript`)
+        } else {
+            switch self {
+            case var .array(array):
+                try `subscript`.setValue(value, in: &array)
+                self = .array(array)
+            case var .object(dictionary):
+                try `subscript`.setValue(value, in: &dictionary)
+                self = .object(dictionary)
+            case .literal, .number, .string:
+                throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)", .subscript)
+            }
+        }
+    }
+
     /// Decode the value into a ``JSONDecodable`` type
     ///
     /// Use this methode to decode this ``JSON`` instance into a ``JSONDecodable`` conforming type. For example:
@@ -640,21 +757,24 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     /// - Parameter subscript: The subscript
     /// - Returns: The value at subscript, or ``JSON/Literal/null`` if no such value exists
     public subscript<T>(_ subscript: T) -> JSON where T: JSONSubscript {
-        (try? value(at: `subscript`)) ?? .null
+        get {
+            (try? value(at: `subscript`)) ?? .null
+        }
+        set {
+            (try? setValue(newValue, forSubscript: `subscript`))
+        }
     }
 
     /// Retrive the value at the provided path
     /// - Parameter path: The path
     /// - Returns: The value at path, or ``JSON/Literal/null`` if no such value exists
     public subscript(_ path: any JSONSubscript ...) -> JSON {
-        (try? value(at: path)) ?? .null
-    }
-
-    /// Decode the value at the provided subscript
-    /// - Parameters subscript: The subscript
-    /// - Returns: The decoded value at subscript, or `nil` if no such value exists, or if the value could not be decoded successfully.
-    public subscript<T, Subscript>(_ subscript: Subscript) -> T? where T: JSONDecodable, Subscript: JSONSubscript {
-        try? value(for: `subscript`).decode()
+        get {
+            (try? value(at: path)) ?? .null
+        }
+        set {
+            (try? setValue(newValue, atPath: path))
+        }
     }
 
     // MARK: - CustomStringConvertible

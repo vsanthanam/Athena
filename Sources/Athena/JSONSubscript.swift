@@ -26,6 +26,7 @@
 /// A type representing a valid JSON subscript
 ///
 /// Because JSON subscripts are always strings (for JSON objects) or integers (for JSON arrays), you likely do not need to implement this protocol yourself.
+///
 /// Athena provides implementations for `String` and `Int`
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
 public protocol JSONSubscript {
@@ -41,6 +42,20 @@ public protocol JSONSubscript {
     /// - Returns: The `JSON` value for the provided subscript
     /// - Throws: An errror if the provided array is not subscriptable using `self`
     func value(in array: [JSON]) throws -> JSON
+
+    /// Mutate the value using a subscript in a dictionary of `String` keys and `JSON` values
+    /// - Parameters:
+    ///   - value: The new value to add to the dictionary
+    ///   - dictionary: The dictionary to mutate using `self` as the subscript
+    /// - Throws: An error if the provided dictionary is not mutable using `self`
+    func setValue(_ value: JSON, in dictionary: inout [String: JSON]) throws
+
+    /// Mutate the value using a subscript in an array of `JSON` values
+    /// - Parameters:
+    ///   - value: The new value to insert into the array
+    ///   - array: The array to mutate using `self` as the subscript
+    /// - Throws: An error if the provided dictionary is not mutable using `self`
+    func setValue(_ value: JSON, in array: inout [JSON]) throws
 }
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
@@ -50,6 +65,14 @@ public extension JSONSubscript {
     }
 
     func value(in array: [JSON]) throws -> JSON {
+        throw JSON.Error("Unimplemented JSON Subscript", .subscript)
+    }
+
+    func setValue(_ value: JSON, in dictionary: inout [String: JSON]) throws {
+        throw JSON.Error("Unimplemented JSON Subscript", .subscript)
+    }
+
+    func setValue(_ value: JSON, in array: inout [JSON]) throws {
         throw JSON.Error("Unimplemented JSON Subscript", .subscript)
     }
 }
@@ -68,6 +91,17 @@ extension Int: JSONSubscript {
         throw JSON.Error("Invalid JSON Subscript", .subscript)
     }
 
+    public func setValue(_ value: JSON, in array: inout [JSON]) throws {
+        guard case array.indices = self else {
+            throw JSON.Error("Index out of bounds", .subscript)
+        }
+        array[self] = value
+    }
+
+    public func setValue(_ value: JSON, in dictionary: inout [String: JSON]) throws {
+        throw JSON.Error("Invalid JSON Subscript", .subscript)
+    }
+
 }
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
@@ -83,6 +117,13 @@ extension String: JSONSubscript {
         throw JSON.Error("Invalid JSON Subscript", .subscript)
     }
 
+    public func setValue(_ value: JSON, in dictionary: inout [String: JSON]) throws {
+        dictionary[self] = value
+    }
+
+    public func setValue(_ value: JSON, in array: inout [JSON]) throws {
+        throw JSON.Error("Invalid JSON Subscript", .subscript)
+    }
 }
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
@@ -93,6 +134,14 @@ public extension JSONSubscript where Self: RawRepresentable, RawValue: JSONSubsc
 
     func value(in array: [JSON]) throws -> JSON {
         try rawValue.value(in: array)
+    }
+
+    func setValue(_ value: JSON, in dictionary: inout [String: JSON]) throws {
+        try rawValue.setValue(value, in: &dictionary)
+    }
+
+    func setValue(_ value: JSON, in array: inout [JSON]) throws {
+        try rawValue.setValue(value, in: &array)
     }
 }
 

@@ -151,7 +151,6 @@ let array = try json.arrayValue // Always Fails
 - ``JSON/init(_:)-3hvss``
 - ``JSON/init(_:)-8recc``
 - ``JSON/decode(_:)``
-- ``JSON/subscript(_:)-qx0p``
 
 ### Serializing JSON
 
@@ -168,6 +167,9 @@ let array = try json.arrayValue // Always Fails
 - ``JSON/value(for:)``
 - ``JSON/value(at:)-65345``
 - ``JSON/value(at:)-90u0n``
+- ``setValue(_:forSubscript:)``
+- ``setValue(_:atPath:)-4xh1d``
+- ``setValue(_:atPath:)-8f9nf``
 - ``JSON/subscript(_:)-7vgbk``
 - ``JSON/subscript(_:)-808v4``
 

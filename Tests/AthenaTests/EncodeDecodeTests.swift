@@ -100,7 +100,7 @@ final class EncodeDecodeTests: XCTestCase {
         let decoded = try! encoded.decode(TestStruct.self)
         XCTAssertEqual(decoded, test)
 
-        let int: Int = encoded["list"][1]!
+        let int = try! encoded["list"][1].decode(Int.self)
         XCTAssertEqual(int, 2)
     }
 
