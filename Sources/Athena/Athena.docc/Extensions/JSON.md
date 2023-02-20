@@ -169,12 +169,13 @@ let array = try json.arrayValue // Always Fails
 - ``JSON/value(forSubscript:)``
 - ``JSON/value(atPath:)``
 - ``JSON/setValue(_:forKey:)``
-- ``JSON/setValue(_:forIndex:)``
+- ``JSON/setValue(_:atIndex:)``
 - ``JSON/setValue(_:forSubscript:)``
 - ``JSON/setValue(_:forPath:)``
 - ``JSON/removeValue(forKey:)``
 - ``JSON/removeValue(atIndex:)``
-- ``JSON/removeValue(atSubscript:)``
+- ``JSON/removeValue(forSubscript:)``
+- ``JSON/removeValue(atPath:)``
 - ``JSON/subscript(_:)-2zxj0``
 - ``JSON/subscript(_:)-1u3wh``
 - ``JSON/subscript(_:)-1085k``

@@ -75,7 +75,7 @@ public extension JSON {
                 case .false:
                     return false
                 case .null:
-                    throw Error()
+                    throw Error("")
                 }
             }
         }

@@ -53,7 +53,7 @@ extension Int: NumberDecodable {
             self = int
         case let .double(double):
             guard double.truncatingRemainder(dividingBy: 1) == 0 else {
-                throw JSON.Error()
+                throw JSON.Error("The value cannot be expressed as an integer")
             }
             self = Int(double)
         }
@@ -96,10 +96,10 @@ extension Bool: NumberDecodable {
             case 1:
                 self = true
             default:
-                throw JSON.Error()
+                throw JSON.Error("The value cannot be expressed as a bool")
             }
         case .double:
-            throw JSON.Error()
+            throw JSON.Error("The value cannot be expressed as a bool")
         }
     }
 }

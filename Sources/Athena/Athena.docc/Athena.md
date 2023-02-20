@@ -141,4 +141,3 @@ Fore more information, see <doc:Serializing> and <doc:Deserializing>.
 ### Errors
 
 - ``JSON/Error``
-- ``JSON/Error/Code``
