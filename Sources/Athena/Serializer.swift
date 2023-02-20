@@ -195,12 +195,12 @@ public extension JSON {
 
             let serializable = buildNSObject(json, using: options)
             guard JSONSerialization.isValidJSONObject(serializable) else {
-                throw Error()
+                throw Error("Unknown Error")
             }
             do {
                 return try JSONSerialization.data(withJSONObject: serializable, options: options.writingOptions)
             } catch {
-                throw Error()
+                throw Error(error.localizedDescription)
             }
         }
 

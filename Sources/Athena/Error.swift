@@ -29,54 +29,13 @@ import Foundation
 public extension JSON {
 
     /// An error produced when working with ``JSON`` values with Athenas
-    struct Error: LocalizedError, CustomNSError, Equatable, Hashable, Sendable, CustomStringConvertible, CustomDebugStringConvertible {
-
-        // MARK: - API
-
-        /// Possible error codes in a ``JSON/Error``
-        public enum Code: Int {
-
-            /// An unknown error
-            case unknown = 0
-
-            /// An error from deserializing `UTF-8` encoded data into ``JSON``
-            case parse = 1
-
-            /// An error from encoding ``JSON`` into a Swift type
-            case encoding = 2
-
-            /// An error form decodeing a Swift type into ``JSON``
-            case decoding = 3
-
-            /// An error when casting a JSON node into a Swift type
-            case casting = 4
-
-            /// An error when attempting to subscript a ``JSON`` value
-            case `subscript` = 5
-
-            /// An error when the parser's maximum parsing depth has been exceeded.
-            case depthExceeded = 6
-        }
+    struct Error: LocalizedError, Equatable, Hashable, Sendable, CustomStringConvertible, CustomDebugStringConvertible {
 
         // MARK: - LocalizedError
 
         public var errorDescription: String? {
             message
         }
-
-        // MARK: - CustomNSError
-
-        public let errorCode: Int
-
-        public var errorUserInfo: [String: Any] {
-            [
-                "message": message,
-                "callsite": callsite,
-                "code": errorCode
-            ]
-        }
-
-        public static let errorDomain: String = "com.athena.json"
 
         // MARK: - CustomStringConvertible
 
@@ -127,14 +86,12 @@ public extension JSON {
 
         init(
             _ message: String? = nil,
-            _ code: Code = .unknown,
             file: StaticString = #file,
             function: StaticString = #function,
             line: UInt = #line,
             column: UInt = #column
         ) {
             self.message = message ?? Error.defaultErrorMessage
-            errorCode = code.rawValue
             self.file = file
             self.function = function
             self.line = line

@@ -105,20 +105,20 @@ extension Bool: JSONCodable {
     public init(json: JSON) throws {
         switch json {
         case .array, .object:
-            throw JSON.Error("Bool value cannot be decoded from \(json)", .decoding)
+            throw JSON.Error("Bool value cannot be decoded from \(json)")
         case let .number(number):
             do {
                 self = try number.decode()
                 break
             } catch {
-                throw JSON.Error("Bool value cannot be decoded from \(json)", .decoding)
+                throw JSON.Error("Bool value cannot be decoded from \(json)")
             }
         case let .literal(literal):
             do {
                 self = try literal.decode()
                 break
             } catch {
-                throw JSON.Error("Bool value cannot be decoded from \(json)", .decoding)
+                throw JSON.Error("Bool value cannot be decoded from \(json)")
             }
         case let .string(string):
             switch string {
@@ -129,7 +129,7 @@ extension Bool: JSONCodable {
                 self = true
                 return
             default:
-                throw JSON.Error("Bool value cannot be decoded from \(json)", .decoding)
+                throw JSON.Error("Bool value cannot be decoded from \(json)")
             }
         }
     }
@@ -150,10 +150,10 @@ extension Int: JSONCodable {
     public init(json: JSON) throws {
         switch json {
         case .array, .object, .literal:
-            throw JSON.Error("Int value cannot be decoded from \(json)", .decoding)
+            throw JSON.Error("Int value cannot be decoded from \(json)")
         case let .string(string):
             guard let int = Int(exactly: string) else {
-                throw JSON.Error("Int value cannot be decoded from \(json)", .decoding)
+                throw JSON.Error("Int value cannot be decoded from \(json)")
             }
             self = int
             return
@@ -162,7 +162,7 @@ extension Int: JSONCodable {
                 self = try number.decode()
                 return
             } catch {
-                throw JSON.Error("Int value cannot be decoded from \(json)", .decoding)
+                throw JSON.Error("Int value cannot be decoded from \(json)")
             }
         }
     }
@@ -183,10 +183,10 @@ extension Double: JSONCodable {
     public init(json: JSON) throws {
         switch json {
         case .array, .object, .literal:
-            throw JSON.Error("Double value cannot be decoded from \(json)", .decoding)
+            throw JSON.Error("Double value cannot be decoded from \(json)")
         case let .string(string):
             guard let double = Double(string) else {
-                throw JSON.Error("Double value cannot be decoded from \(json)", .decoding)
+                throw JSON.Error("Double value cannot be decoded from \(json)")
             }
             self = double
         case let .number(number):
@@ -194,7 +194,7 @@ extension Double: JSONCodable {
                 self = try number.decode()
                 break
             } catch {
-                throw JSON.Error("Double value cannot be decoded from \(json)", .decoding)
+                throw JSON.Error("Double value cannot be decoded from \(json)")
             }
         }
     }
@@ -215,13 +215,13 @@ extension String: JSONCodable {
     public init(json: JSON) throws {
         switch json {
         case .array, .object, .literal:
-            throw JSON.Error("String value cannot be decoded from \(json)", .decoding)
+            throw JSON.Error("String value cannot be decoded from \(json)")
         case let .number(number):
             do {
                 self = try number.decode()
                 break
             } catch {
-                throw JSON.Error("Couldn't decode string from json \(json)", .decoding)
+                throw JSON.Error("Couldn't decode string from json \(json)")
             }
         case let .string(string):
             self = string
@@ -245,11 +245,11 @@ extension URL: JSONCodable {
         switch json {
         case let .string(string):
             guard let url = URL(string: string) else {
-                throw JSON.Error("Couldn't  decode URL from json \(json)", .decoding)
+                throw JSON.Error("Couldn't  decode URL from json \(json)")
             }
             self = url
         case .array, .object, .number, .literal:
-            throw JSON.Error("Couldn't decode URL from json \(json)", .decoding)
+            throw JSON.Error("Couldn't decode URL from json \(json)")
         }
     }
 }
@@ -268,7 +268,7 @@ extension UUID: JSONCodable {
     public init(json: JSON) throws {
         let uuidString = try json.decode(String.self)
         guard let uuid = UUID(uuidString: uuidString) else {
-            throw JSON.Error("Couldn't decode UUID from json \(json)", .decoding)
+            throw JSON.Error("Couldn't decode UUID from json \(json)")
         }
         self = uuid
     }
@@ -291,7 +291,7 @@ extension Array: JSONDecodable where Element: JSONDecodable {
 
     public init(json: JSON) throws {
         guard case let .array(array) = json else {
-            throw JSON.Error("Array<\(String(describing: Element.self))> value cannot be decoded from \(json)", .decoding)
+            throw JSON.Error("Array<\(String(describing: Element.self))> value cannot be decoded from \(json)")
         }
         self = try array.map { json in try Element(json: json) }
     }
@@ -341,7 +341,7 @@ extension Dictionary: JSONDecodable where Key == String, Value: JSONDecodable {
 
     public init(json: JSON) throws {
         guard case let .object(dictionary) = json else {
-            throw JSON.Error("Dictionary<String, \(String(describing: Value.self))> value cannot be decoded from \(json)", .decoding)
+            throw JSON.Error("Dictionary<String, \(String(describing: Value.self))> value cannot be decoded from \(json)")
         }
         self = try dictionary.reduce([:]) { dict, pair in
             var next = dict
@@ -372,7 +372,7 @@ public extension JSONDecodable where Self: RawRepresentable, RawValue: JSONDecod
     init(json: JSON) throws {
         let raw = try RawValue(json: json)
         guard let value = Self(rawValue: raw) else {
-            throw JSON.Error("\(String(describing: Self.self)) value cannot be decoded from \(json)", .decoding)
+            throw JSON.Error("\(String(describing: Self.self)) value cannot be decoded from \(json)")
         }
         self = value
     }

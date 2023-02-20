@@ -417,7 +417,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     public var literalValue: Literal {
         get throws {
             guard case let .literal(literal) = self else {
-                throw Error("The value is not a literal", .casting)
+                throw Error("The value is not a literal")
             }
             return literal
         }
@@ -444,7 +444,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     public var numberValue: Number {
         get throws {
             guard case let .number(number) = self else {
-                throw Error("The value is not a number", .casting)
+                throw Error("The value is not a number")
             }
             return number
         }
@@ -455,7 +455,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     public var stringValue: String {
         get throws {
             guard case let .string(string) = self else {
-                throw Error("The value is not a string", .casting)
+                throw Error("The value is not a string")
             }
             return string
         }
@@ -466,7 +466,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     public var arrayValue: [JSON] {
         get throws {
             guard case let .array(array) = self else {
-                throw Error("The value is not an array", .casting)
+                throw Error("The value is not an array")
             }
             return array
         }
@@ -477,7 +477,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     public var dictionaryValue: [String: JSON] {
         get throws {
             guard case let .object(dictionary) = self else {
-                throw Error("The value is not a dictionary", .casting)
+                throw Error("The value is not a dictionary")
             }
             return dictionary
         }
@@ -556,12 +556,12 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         switch (self, `subscript`) {
         case let (.object(dictionary), .key(key)):
             guard let value = dictionary[key] else {
-                throw Error()
+                throw Error("No value for subscript \(key)")
             }
             return value
         case let (.array(array), .index(index)):
             guard case array.indices = index else {
-                throw Error()
+                throw Error("Index \(index) out of bounds")
             }
             return array[index]
         case (.object, _),
@@ -569,7 +569,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
              (.string, _),
              (.number, _),
              (.literal, _):
-            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)", .subscript)
+            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)")
         }
     }
 
@@ -637,7 +637,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
             array[index] = value
             self = .array(array)
         case (.object, _), (.array, _), (.string, _), (.number, _), (.literal, _):
-            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)", .subscript)
+            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)")
         }
     }
 
@@ -748,12 +748,12 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
             self = .object(dictionary)
         case (var .array(array), let .index(index)):
             guard case array.indices = index else {
-                throw Error()
+                throw Error("Index \(index) out of bounds")
             }
             array.remove(at: index)
             self = .array(array)
         case (.object, _), (.array, _), (.string, _), (.number, _), (.literal, _):
-            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)", .subscript)
+            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)")
         }
     }
 
@@ -821,7 +821,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided path is invalid.
     public mutating func removeValue(atPath path: Path) throws {
         guard let `subscript` = path.first else {
-            throw Error()
+            throw Error("Path must contain at least one subscript")
         }
         if path.count > 1 {
             var next = try value(forSubscript: `subscript`)

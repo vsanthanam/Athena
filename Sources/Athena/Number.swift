@@ -57,7 +57,7 @@ public extension JSON {
                 case let .int(int):
                     return int
                 case .double:
-                    throw Error()
+                    throw Error("The value is not an integer")
                 }
             }
         }
@@ -68,7 +68,7 @@ public extension JSON {
             get throws {
                 switch self {
                 case .int:
-                    throw Error()
+                    throw Error("The value is not a double")
                 case let .double(double):
                     return double
                 }

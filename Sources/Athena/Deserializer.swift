@@ -266,7 +266,7 @@ public extension JSON {
 
         private mutating func parseFromOffset() throws -> JSON {
             guard depth <= 2048 else {
-                throw Error("Maximum parse depth exceeded", .depthExceeded)
+                throw Error("Maximum parse depth exceeded")
             }
             guard !input.isEmpty else {
                 throw endOfStream()
@@ -558,7 +558,7 @@ public extension JSON {
             while parser.state != .complete {
                 switch parser.state {
                 case .leadingMinus, .leadingZero, .preDecimalDigit:
-                    fatalError()
+                    fatalError("Invalid JSON Parser State")
                 case .decimalPoint:
                     try parser.decimalPoint()
                 case .postDecimalDigit:
@@ -651,7 +651,7 @@ public extension JSON {
             let header = input.prefix(4)
             let encodingPrefixInformation = EncodingDetector.detectEncoding(header)
             guard encodings.contains(encodingPrefixInformation.encoding) else {
-                throw Error("Unsupported string encoding", .parse)
+                throw Error("Unsupported string encoding")
             }
             offset = offset.advanced(by: encodingPrefixInformation.byteOrderMarkLength)
         }
@@ -708,9 +708,9 @@ func parseError(
     }
     if let title {
         let full = [title, message.lowercased()].joined(separator: " - ")
-        return JSON.Error(full, .parse, file: file, function: function, line: line, column: column)
+        return JSON.Error(full, file: file, function: function, line: line, column: column)
     } else {
-        return JSON.Error(message, .parse, file: file, function: function, line: line, column: column)
+        return JSON.Error(message, file: file, function: function, line: line, column: column)
     }
 }
 
@@ -720,5 +720,5 @@ func endOfStream(
     line: UInt = #line,
     column: UInt = #column
 ) -> any Error {
-    JSON.Error("Unexpected end of stream", .parse, file: file, function: function, line: line, column: column)
+    JSON.Error("Unexpected end of stream", file: file, function: function, line: line, column: column)
 }
