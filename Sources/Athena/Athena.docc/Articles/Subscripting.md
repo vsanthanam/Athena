@@ -39,39 +39,28 @@ You could access its nested ``JSON`` values like this:
 ```swift
 import Athena
 
-let firstName: JSON = try innovator.value(for: "first_name")
+let firstName: JSON = try innovator.value(forKey: "first_name")
 
 let firstProductName: JSON = try innovator
-    .value(for: "inventions")
-    .value(for: 0)
-    .value(for: "name")
+    .value(forKey: "inventions")
+    .value(atIndex: 0)
+    .value(forKey: "name")
 ```
 
-rewrite this
-<!--You can combine multiple calls to ``JSON/value(for:)`` using a single call to ``JSON/value(at:)-65345`` using variadic arguments:-->
-rewrite this
+You can also create a ``JSON/Path`` from an array of valid subscripts. For example:
 
 ```swift
 import Athena
 
 let innovator = JSON( ... )
-let firstProductName: JSON = try innovator.value(at: "inventions", 0, "name")
+let path: JSON.Path = ["inventions", 0, "name"]
+let firstProductName: JSON = try innovator.value(atPath: path)
 ```
 
-You can also use an Array of `any JSONSubscript` types:
-
-```swift
-import Athena
-
-let innovator = JSON( ... )
-let path: JSONPath = ["inventions", 0, "name"]
-let firstProductName = try innovator(at: path)
-```
+See the symbol documentation for ``JSON/Subscript`` for more information.
 
 You can also use Swift's built-in subscript syntax to achieve the same effect.
-Doing so returns ``JSON/Literal/null`` for invalid subscripts instead of throwing an error
-
-Using chained subsripts:
+Doing so returns ``JSON/Literal/null`` for invalid subscripts instead of throwing an error.
 
 ```swift
 import Athena
@@ -80,23 +69,17 @@ let innovator = JSON( ... )
 let firstProductName: JSON = innovator["inventions"][0]["name"]
 ```
 
-Using a single subscript with variadic arguments:
-
-```swift
-import Athena
-
-let innovator = JSON( ... )
-let firstProductName: JSON = innovator["inventions", 0, "name"]
-```
-
-You can also use subscripts to mutate a JSON value
+You can also use subscripts to add, remove, or replace values from a ``JSON`` value.
 
 ```swift
 import Athena
 
 try innovator.setValue("Steven", forSubscript: "first_name")
 innovator["middle_name"] = "Paul"
+try innovator["inventions"].removeValue(atIndex: 3)
 ```
+
+- Note: ``JSON`` is a value type. To mutate a JSON value using subscripts, it must be declared as a variable, not as a constant.
 
 ## Topics
 
