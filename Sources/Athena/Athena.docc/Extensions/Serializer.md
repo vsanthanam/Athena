@@ -3,7 +3,7 @@
 ## Overview
 
 You do not need to initialize instances of this type.
-Its interface only contains static methods.
+Its public interface only contains static methods.
 
 ## Topics
 
