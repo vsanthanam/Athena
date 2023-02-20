@@ -56,6 +56,10 @@ public protocol JSONSubscript {
     ///   - array: The array to mutate using `self` as the subscript
     /// - Throws: An error if the provided dictionary is not mutable using `self`
     func setValue(_ value: JSON, in array: inout [JSON]) throws
+
+    func removeValue(from dictionary: inout [String: JSON]) throws
+
+    func removeValue(from array: inout [JSON]) throws
 }
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
@@ -102,6 +106,17 @@ extension Int: JSONSubscript {
         throw JSON.Error("Invalid JSON Subscript", .subscript)
     }
 
+    public func removeValue(from array: inout [JSON]) throws {
+        guard case array.indices = self else {
+            throw JSON.Error("Index out of bounds", .subscript)
+        }
+        array.remove(at: self)
+    }
+
+    public func removeValue(from dictionary: inout [String: JSON]) throws {
+        throw JSON.Error("Invalid JSON Subscript", .subscript)
+    }
+
 }
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
@@ -124,6 +139,14 @@ extension String: JSONSubscript {
     public func setValue(_ value: JSON, in array: inout [JSON]) throws {
         throw JSON.Error("Invalid JSON Subscript", .subscript)
     }
+
+    public func removeValue(from dictionary: inout [String: JSON]) throws {
+        dictionary.removeValue(forKey: self)
+    }
+
+    public func removeValue(from array: inout [JSON]) throws {
+        throw JSON.Error("Invalid JSON Subscript", .subscript)
+    }
 }
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
@@ -142,6 +165,14 @@ public extension JSONSubscript where Self: RawRepresentable, RawValue: JSONSubsc
 
     func setValue(_ value: JSON, in array: inout [JSON]) throws {
         try rawValue.setValue(value, in: &array)
+    }
+
+    func removeValue(from dictionary: inout [String: JSON]) throws {
+        try rawValue.removeValue(from: &dictionary)
+    }
+
+    func removeValue(from array: inout [JSON]) throws {
+        try rawValue.removeValue(from: &array)
     }
 }
 

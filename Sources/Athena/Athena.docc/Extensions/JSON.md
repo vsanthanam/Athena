@@ -170,6 +170,9 @@ let array = try json.arrayValue // Always Fails
 - ``setValue(_:forSubscript:)``
 - ``setValue(_:atPath:)-4xh1d``
 - ``setValue(_:atPath:)-8f9nf``
+- ``removeValue(forSubscript:)``
+- ``removeValue(atPath:)-4g4ni``
+- ``removeValue(atPath:)-9avs8``
 - ``JSON/subscript(_:)-7vgbk``
 - ``JSON/subscript(_:)-808v4``
 

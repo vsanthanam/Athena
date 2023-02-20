@@ -78,12 +78,9 @@ final class JSONTests: XCTestCase {
             ]
         ]
 
-//        test["power", "sniqqity", "foo"] = "foo"
-//        test["power", "sniqqity", "bar"] = "bar"
-//        test["power", "omq", 1] = "shit"
-        try! test.setValue("foo", atPath: "power", "sniqqity", "foo")
-        try! test.setValue("bar", atPath: "power", "sniqqity", "bar")
-        try! test.setValue("shit", atPath: "power", "omq", 1)
+        test["power", "sniqqity", "foo"] = "foo"
+        test["power", "sniqqity", "bar"] = "bar"
+        test["power", "omq", 1] = "shit"
 
         let expected: JSON = [
             "power": [

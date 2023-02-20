@@ -485,7 +485,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
 
     /// Determines whether the JSON represents a `null` literal
     ///
-    /// This `var` evaluates to `true` if this JSON object represents a `null` literal or `false` if it does not.
+    /// This property evaluates to `true` if this JSON object represents a `null` literal or `false` if it does not.
     public var isNull: Bool {
         guard case let .literal(literal) = self else {
             return false
@@ -599,7 +599,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     /// ]
     ///
     /// let nextLetters: JSON = ["delta, epsilon, zeta"]
-    /// try json.setValue(nextLetters, forSubscript: "greek_letters")
+    /// try json.setValue(nextLetters, for: "greek_letters")
     /// ```
     ///
     /// For more information, see <doc:Subscripting>.
@@ -608,7 +608,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///   - value: The value you wish to insert
     ///   - subscript: The subscript
     /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid.
-    public mutating func setValue<T>(_ value: JSON, forSubscript subscript: T) throws where T: JSONSubscript {
+    public mutating func setValue<T>(_ value: JSON, for subscript: T) throws where T: JSONSubscript {
         switch self {
         case var .array(array):
             try `subscript`.setValue(value, in: &array)
@@ -637,7 +637,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///     ]
     /// ]
     ///
-    /// try json.setValue("delta", atPath: "greek_letters", 0)
+    /// try json.setValue("delta", at: "greek_letters", 0)
     /// ```
     ///
     /// For more information, see <doc:Subscripting>.
@@ -646,8 +646,8 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///   - value: The value you wish to insert
     ///   - path: The path as expressed by an ordered list of variadic suscript arguments
     /// - Throws: A ``JSON/Error`` if the provided path is invalid.
-    public mutating func setValue(_ value: JSON, atPath path: any JSONSubscript ...) throws {
-        try setValue(value, atPath: path)
+    public mutating func setValue(_ value: JSON, at path: any JSONSubscript ...) throws {
+        try setValue(value, at: path)
     }
 
     /// Insert a value at the provided path
@@ -676,15 +676,14 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///   - value: The value you wish to insert
     ///   - path: The path as expressed by an array of subscript elements
     /// - Throws: A ``JSON/Error`` if the provided path is invalid.
-    public mutating func setValue(_ value: JSON, atPath path: JSONPath) throws {
+    public mutating func setValue(_ value: JSON, at path: JSONPath) throws {
         guard let `subscript` = path.first else {
-            self = value
-            return
+            throw Error("JSON path must contain at least 1 subscript", .subscript)
         }
         if path.count > 1 {
             var updated = try self.value(at: `subscript`)
-            try updated.setValue(value, atPath: Array(path.dropFirst()))
-            try setValue(updated, atPath: `subscript`)
+            try updated.setValue(value, at: Array(path.dropFirst()))
+            try setValue(updated, at: `subscript`)
         } else {
             switch self {
             case var .array(array):
@@ -692,6 +691,45 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
                 self = .array(array)
             case var .object(dictionary):
                 try `subscript`.setValue(value, in: &dictionary)
+                self = .object(dictionary)
+            case .literal, .number, .string:
+                throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)", .subscript)
+            }
+        }
+    }
+
+    public mutating func removeValue<T>(for subscript: T) throws where T: JSONSubscript {
+        switch self {
+        case var .array(array):
+            try `subscript`.removeValue(from: &array)
+            self = .array(array)
+        case var .object(dictionary):
+            try `subscript`.removeValue(from: &dictionary)
+            self = .object(dictionary)
+        case .literal, .number, .string:
+            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)", .subscript)
+        }
+    }
+
+    public mutating func removeValue(at path: JSONSubscript ...) throws {
+        try removeValue(at: path)
+    }
+
+    public mutating func removeValue(at path: JSONPath) throws {
+        guard let `subscript` = path.first else {
+            throw Error("JSON path must contain at least 1 subscript", .subscript)
+        }
+        if path.count > 1 {
+            var updated = try value(at: `subscript`)
+            try updated.removeValue(at: Array(path.dropFirst()))
+            try setValue(updated, at: `subscript`)
+        } else {
+            switch self {
+            case var .array(array):
+                try `subscript`.removeValue(from: &array)
+                self = .array(array)
+            case var .object(dictionary):
+                try `subscript`.removeValue(from: &dictionary)
                 self = .object(dictionary)
             case .literal, .number, .string:
                 throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)", .subscript)
@@ -761,7 +799,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
             (try? value(at: `subscript`)) ?? .null
         }
         set {
-            (try? setValue(newValue, forSubscript: `subscript`))
+            (try? setValue(newValue, for: `subscript`))
         }
     }
 
@@ -773,7 +811,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
             (try? value(at: path)) ?? .null
         }
         set {
-            (try? setValue(newValue, atPath: path))
+            (try? setValue(newValue, at: path))
         }
     }
 
