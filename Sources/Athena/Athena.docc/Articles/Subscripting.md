@@ -47,7 +47,9 @@ let firstProductName: JSON = try innovator
     .value(for: "name")
 ```
 
-You can combine multiple calls to ``JSON/value(for:)`` using a single call to ``JSON/value(at:)-65345`` using variadic arguments:
+rewrite this
+<!--You can combine multiple calls to ``JSON/value(for:)`` using a single call to ``JSON/value(at:)-65345`` using variadic arguments:-->
+rewrite this
 
 ```swift
 import Athena
@@ -98,10 +100,10 @@ innovator["middle_name"] = "Paul"
 
 ## Topics
 
-### Protocols
+### Structs
 
-- ``JSONSubscript``
+- ``JSON/Subscript``
 
 ### Typealiases
 
-- ``JSONPath``
+- ``JSON/Path``

@@ -164,17 +164,21 @@ let array = try json.arrayValue // Always Fails
 
 ### Subscripting
 
-- ``JSON/value(for:)``
-- ``JSON/value(at:)-65345``
-- ``JSON/value(at:)-90u0n``
-- ``setValue(_:forSubscript:)``
-- ``setValue(_:atPath:)-4xh1d``
-- ``setValue(_:atPath:)-8f9nf``
-- ``removeValue(forSubscript:)``
-- ``removeValue(atPath:)-4g4ni``
-- ``removeValue(atPath:)-9avs8``
-- ``JSON/subscript(_:)-7vgbk``
-- ``JSON/subscript(_:)-808v4``
+- ``JSON/value(forKey:)``
+- ``JSON/value(atIndex:)``
+- ``JSON/value(forSubscript:)``
+- ``JSON/value(atPath:)``
+- ``JSON/setValue(_:forKey:)``
+- ``JSON/setValue(_:forIndex:)``
+- ``JSON/setValue(_:forSubscript:)``
+- ``JSON/setValue(_:forPath:)``
+- ``JSON/removeValue(forKey:)``
+- ``JSON/removeValue(atIndex:)``
+- ``JSON/removeValue(atSubscript:)``
+- ``JSON/subscript(_:)-2zxj0``
+- ``JSON/subscript(_:)-1u3wh``
+- ``JSON/subscript(_:)-1085k``
+- ``JSON/subscript(_:)-8apz2``
 
 ### Initializers
 
