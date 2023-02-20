@@ -600,9 +600,14 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided path is invalid, or if no such value exists at the provided path
     public func value(atPath path: Path) throws -> JSON {
         guard let `subscript` = path.first else {
-            return self
+            throw Error("Path must contain at least one subscript")
         }
-        return try value(forSubscript: `subscript`).value(atPath: Array(path.dropFirst()))
+        if !path.isEmpty {
+            return try value(forSubscript: `subscript`).value(atPath: Array(path.dropFirst()))
+        } else {
+            return try value(forSubscript: `subscript`)
+        }
+
     }
 
     /// Update the value at the provided subscript.
@@ -711,8 +716,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided path is invalid.
     public mutating func setValue(_ value: JSON, forPath path: Path) throws {
         guard let `subscript` = path.first else {
-            self = value
-            return
+            throw Error("Path must contain at least one subscript")
         }
         if path.count > 1 {
             var next = try self.value(forSubscript: `subscript`)
@@ -886,7 +890,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
 
     // MARK: - Subscripts
 
-    /// Retrive the value at the provided subscript
+    /// Retrive or update the value at the provided subscript
     /// - Parameter subscript: The subscript
     /// - Returns: The value at subscript, or ``JSON/Literal/null`` if no such value exists
     public subscript(_ subscript: Subscript) -> JSON {
@@ -898,7 +902,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         }
     }
 
-    /// Retrive the value at the provided key
+    /// Retrive or update the value at the provided key
     /// - Parameter key: The key
     /// - Returns: The value at key, or ``JSON/Literal/null`` if no such value exists
     public subscript(_ key: String) -> JSON {
@@ -910,7 +914,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         }
     }
 
-    /// Retrive the value at the provided index
+    /// Retrive or update the value at the provided index
     /// - Parameter subscript: The index
     /// - Returns: The value at index, or ``JSON/Literal/null`` if no such value exists
     public subscript(_ index: Int) -> JSON {
@@ -922,7 +926,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         }
     }
 
-    /// Retrive the value at the provided path
+    /// Retrive or update the value at the provided path
     /// - Parameter subscript: The path
     /// - Returns: The value at subscript, or ``JSON/Literal/null`` if no such value exists
     public subscript(_ path: Path) -> JSON {
