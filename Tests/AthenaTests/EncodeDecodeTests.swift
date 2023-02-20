@@ -123,7 +123,7 @@ final class EncodeDecodeTests: XCTestCase {
         let decoded = try! await JSON.Decoder.decode(TestStruct.self, from: encoded)
         XCTAssertEqual(decoded, test)
 
-        let json = encoded["list", 1]
+        let json = encoded["list"][1]
         let int: Int = try! await JSON.Decoder.decode(from: json)
         XCTAssertEqual(int, 2)
     }
