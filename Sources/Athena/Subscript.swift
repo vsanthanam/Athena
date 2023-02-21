@@ -32,16 +32,10 @@ public extension JSON {
 
         // MARK: - Initializers
 
-        /// Create a ``JSON/Subscript`` from a string
-        /// - Parameter key: The string
-        public init(_ key: String) {
-            self = .key(key)
-        }
-
-        /// Create a ``JSON/Subscript`` from an integer
-        /// - Parameter index: The integer
-        public init(_ index: Int) {
-            self = .index(index)
+        /// Create a ``JSON/Subscript`` from a ``JSONSubscriptRepresentable`` conforming type
+        /// - Parameter value: An instance of a ``JSONSubscriptRepresentable`` conforming type
+        public init<T>(_ value: T) where T: JSONSubscriptRepresentable {
+            self = value.toJSONSubscript()
         }
 
         // MARK: - Enumeration Cases
@@ -131,4 +125,26 @@ public extension JSON {
     /// A typealias representing a JSON Path
     typealias Path = [Subscript]
 
+}
+
+public protocol JSONSubscriptRepresentable {
+    func toJSONSubscript() -> JSON.Subscript
+}
+
+extension String: JSONSubscriptRepresentable {
+    public func toJSONSubscript() -> JSON.Subscript {
+        .key(self)
+    }
+}
+
+extension Int: JSONSubscriptRepresentable {
+    public func toJSONSubscript() -> JSON.Subscript {
+        .index(self)
+    }
+}
+
+public extension JSONSubscriptRepresentable where Self: RawRepresentable, RawValue: JSONSubscriptRepresentable {
+    func toJSONSubscript() -> JSON.Subscript {
+        rawValue.toJSONSubscript()
+    }
 }

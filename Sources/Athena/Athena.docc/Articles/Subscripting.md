@@ -90,3 +90,7 @@ try innovator["inventions"].removeValue(atIndex: 3)
 ### Typealiases
 
 - ``JSON/Path``
+
+### Protocols
+
+- ``Athena/JSONSubscriptRepresentable``

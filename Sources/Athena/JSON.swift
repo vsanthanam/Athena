@@ -573,6 +573,11 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         }
     }
 
+    public func value<T>(forSubscript subscript: T) throws -> JSON where T: JSONSubscriptRepresentable {
+        let `subscript` = `subscript`.toJSONSubscript()
+        return try value(forSubscript: `subscript`)
+    }
+
     /// Retrive the value at the provided path
     ///
     /// Only JSON objects and JSON arrays can be subscripted.
@@ -610,6 +615,11 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
 
     }
 
+    public func value(atPath path: any JSONSubscriptRepresentable ...) throws -> JSON {
+        let path = path.map { `subscript` in `subscript`.toJSONSubscript() }
+        return try value(atPath: Array(path))
+    }
+
     /// Update the value at the provided subscript.
     ///
     /// Only JSON objects and JSON arrays can be subscripted.
@@ -644,6 +654,11 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         case (.object, _), (.array, _), (.string, _), (.number, _), (.literal, _):
             throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)")
         }
+    }
+
+    public mutating func setValue<T>(_ value: JSON, forSubscript subscript: T) throws where T: JSONSubscriptRepresentable {
+        let `subscript` = `subscript`.toJSONSubscript()
+        try setValue(value, forSubscript: `subscript`)
     }
 
     /// Update the value at the provided key.
@@ -714,17 +729,22 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///   - value: The new value
     ///   - path: The path
     /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided path is invalid.
-    public mutating func setValue(_ value: JSON, forPath path: Path) throws {
+    public mutating func setValue(_ value: JSON, atPath path: Path) throws {
         guard let `subscript` = path.first else {
             throw Error("Path must contain at least one subscript")
         }
         if path.count > 1 {
             var next = try self.value(forSubscript: `subscript`)
-            try next.setValue(value, forPath: Array(path.dropFirst()))
+            try next.setValue(value, atPath: Array(path.dropFirst()))
             try setValue(next, forSubscript: `subscript`)
         } else {
             try setValue(value, forSubscript: `subscript`)
         }
+    }
+
+    public mutating func setValue(_ value: JSON, atPath path: any JSONSubscriptRepresentable ...) throws {
+        let path = path.map { `subscript` in `subscript`.toJSONSubscript() }
+        try setValue(value, atPath: path)
     }
 
     /// Remove the value at the provided subscript.
@@ -759,6 +779,11 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         case (.object, _), (.array, _), (.string, _), (.number, _), (.literal, _):
             throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)")
         }
+    }
+
+    public mutating func removeValue<T>(forSubscript subscript: T) throws where T: JSONSubscriptRepresentable {
+        let `subscript` = `subscript`.toJSONSubscript()
+        try removeValue(forSubscript: `subscript`)
     }
 
     /// Remove the value at the provided key
@@ -836,6 +861,11 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         }
     }
 
+    public mutating func removeValue(atPath path: any JSONSubscriptRepresentable ...) throws {
+        let path = path.map { `subscript` in `subscript`.toJSONSubscript() }
+        try removeValue(atPath: path)
+    }
+
     /// Decode the value into a ``JSONDecodable`` type
     ///
     /// Use this methode to decode this ``JSON`` instance into a ``JSONDecodable`` conforming type. For example:
@@ -902,6 +932,26 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         }
     }
 
+    public subscript<T>(_ subscript: T) -> JSON where T: JSONSubscriptRepresentable {
+        get {
+            (try? value(forSubscript: `subscript`)) ?? .literal(.null)
+        }
+        set {
+            try? setValue(newValue, forSubscript: `subscript`)
+        }
+    }
+
+    public subscript(_ path: any JSONSubscriptRepresentable ...) -> JSON {
+        get {
+            let path = path.map { `subscript` in `subscript`.toJSONSubscript() }
+            return (try? value(atPath: path)) ?? .literal(.null)
+        }
+        set {
+            let path = path.map { `subscript` in `subscript`.toJSONSubscript() }
+            try? setValue(newValue, atPath: path)
+        }
+    }
+
     /// Retrive or update the value at the provided key
     /// - Parameter key: The key
     /// - Returns: The value at key, or ``JSON/Literal/null`` if no such value exists
@@ -934,7 +984,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
             (try? value(atPath: path)) ?? .literal(.null)
         }
         set {
-            try? setValue(newValue, forPath: path)
+            try? setValue(newValue, atPath: path)
         }
     }
 
