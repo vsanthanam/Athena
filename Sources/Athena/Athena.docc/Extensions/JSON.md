@@ -162,25 +162,34 @@ let array = try json.arrayValue // Always Fails
 - ``JSON/init(data:)``
 - ``JSON/init(jsonString:)``
 
-### Subscripting
+### Retrieving Nested Values
 
 - ``JSON/value(forKey:)``
 - ``JSON/value(atIndex:)``
 - ``JSON/value(forSubscript:)-1bmhw``
 - ``JSON/value(forSubscript:)-4nozx``
 - ``JSON/value(atPath:)``
+
+### Updating Nested Values
+
 - ``JSON/setValue(_:forKey:)``
 - ``JSON/setValue(_:atIndex:)``
 - ``JSON/setValue(_:forSubscript:)-udmw``
 - ``JSON/setValue(_:forSubscript:)-8wcl8``
 - ``JSON/setValue(_:forPath:)``
+
+### Removing Nested Values
+
 - ``JSON/removeValue(forKey:)``
 - ``JSON/removeValue(atIndex:)``
 - ``JSON/removeValue(forSubscript:)-968zp``
 - ``JSON/removeValue(forSubscript:)-5fpzh``
 - ``JSON/removeValue(atPath:)``
-- ``JSON/subscript(_:)-80ww6``
+
+### Subscripts
+
 - ``JSON/subscript(_:)-1085k``
+- ``JSON/subscript(_:)-80ww6``
 
 ### Initializers
 
