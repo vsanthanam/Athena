@@ -23,8 +23,8 @@ let index = JSON.Subscript.index(23)
 ```
 
 ```swift
-let key = JSON.Subscript("some-key")
-let index = JSON.Subscript(23)
+let key = JSON.Subscript(key: "some-key")
+let index = JSON.Subscript(index: 23)
 ```
 
 ```swift
