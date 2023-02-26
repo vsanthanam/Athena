@@ -543,8 +543,8 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///
     /// let object: JSON = ["key": "value"]
     /// let array: JSON = ["alpha", "beta", "gamma"]
-    /// let value = try object.value(forSubscript: "key")
-    /// let beta = try array.value(forSubscript: 1)
+    /// let value = try object.value(forSubscript: JSON.Subscript(key: "key"))
+    /// let beta = try array.value(forSubscript: JSON.Subscript(index: 1))
     /// ```
     ///
     /// See <doc:Subscripting> for more information.
@@ -573,6 +573,30 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         }
     }
 
+    /// Retrive the value at the provided subscript.
+    ///
+    /// Only JSON objects and JSON arrays can be subscripted.
+    /// JSON objects can be be subscripted using strings, while JSON arrays can be subscripted using integers.
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let object: JSON = ["key": "value"]
+    /// let array: JSON = ["alpha", "beta", "gamma"]
+    /// let value = try object.value(forSubscript: "key")
+    /// let beta = try array.value(forSubscript: 1)
+    /// ```
+    ///
+    /// See <doc:Subscripting> for more information.
+    ///
+    /// - Parameter subscript: The subscript
+    /// - Returns: The value at subscript
+    /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid, or if no such value exists at the provided subscript
+    public func value<T>(forSubscript subscript: T) throws -> JSON where T: JSONSubscriptRepresentable {
+        let `subscript` = Subscript(`subscript`)
+        return try value(forSubscript: `subscript`)
+    }
+
     /// Retrive the value at the provided path
     ///
     /// Only JSON objects and JSON arrays can be subscripted.
@@ -589,7 +613,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///     ]
     /// ]
     ///
-    /// let path: JSON.Path = ["greek_letters", 1]
+    /// let path: JSON.Path = [JSON.Subscript(key: "greek_letters"), JSON.Subscript(index: 1)]
     /// let beta = try json.value(atPath: path)
     /// ```
     ///
@@ -608,42 +632,6 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
             return try value(forSubscript: `subscript`)
         }
 
-    }
-
-    /// Update the value at the provided subscript.
-    ///
-    /// Only JSON objects and JSON arrays can be subscripted.
-    /// JSON objects can be be subscripted using strings, while JSON arrays can be subscripted using integers.
-    ///
-    /// ```swift
-    /// import Athena
-    ///
-    /// let object: JSON = ["key": "value"]
-    /// let array: JSON = ["alpha", "beta", "gamma"]
-    /// try object.setValue("foo", forSubscript: "key")
-    /// try array.setValue("delta", forSubscript: 0)
-    /// ```
-    ///
-    /// See <doc:Subscripting> for more information.
-    ///
-    /// - Parameters:
-    ///   - value: The new value
-    ///   - subscript: The subscript
-    /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid.
-    public mutating func setValue(_ value: JSON, forSubscript subscript: Subscript) throws {
-        switch (self, `subscript`) {
-        case (var .object(dictionary), let .key(key)):
-            dictionary[key] = value
-            self = .object(dictionary)
-        case (var .array(array), let .index(index)):
-            guard case array.indices = index else {
-                throw Error("Index OOB")
-            }
-            array[index] = value
-            self = .array(array)
-        case (.object, _), (.array, _), (.string, _), (.number, _), (.literal, _):
-            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)")
-        }
     }
 
     /// Update the value at the provided key.
@@ -688,6 +676,67 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         try setValue(value, forSubscript: .index(index))
     }
 
+    /// Update the value at the provided subscript.
+    ///
+    /// Only JSON objects and JSON arrays can be subscripted.
+    /// JSON objects can be be subscripted using strings, while JSON arrays can be subscripted using integers.
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let object: JSON = ["key": "value"]
+    /// let array: JSON = ["alpha", "beta", "gamma"]
+    /// try object.setValue("foo", forSubscript: JSON.Subscript(key: "key"))
+    /// try array.setValue("delta", forSubscript: JSON.Subscript(index: 0))
+    /// ```
+    ///
+    /// See <doc:Subscripting> for more information.
+    ///
+    /// - Parameters:
+    ///   - value: The new value
+    ///   - subscript: The subscript
+    /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid.
+    public mutating func setValue(_ value: JSON, forSubscript subscript: Subscript) throws {
+        switch (self, `subscript`) {
+        case (var .object(dictionary), let .key(key)):
+            dictionary[key] = value
+            self = .object(dictionary)
+        case (var .array(array), let .index(index)):
+            guard case array.indices = index else {
+                throw Error("Index OOB")
+            }
+            array[index] = value
+            self = .array(array)
+        case (.object, _), (.array, _), (.string, _), (.number, _), (.literal, _):
+            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)")
+        }
+    }
+
+    /// Update the value at the provided subscript.
+    ///
+    /// Only JSON objects and JSON arrays can be subscripted.
+    /// JSON objects can be be subscripted using strings, while JSON arrays can be subscripted using integers.
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let object: JSON = ["key": "value"]
+    /// let array: JSON = ["alpha", "beta", "gamma"]
+    /// try object.setValue("foo", forSubscript: "key")
+    /// try array.setValue("delta", forSubscript: 0)
+    /// ```
+    ///
+    /// See <doc:Subscripting> for more information.
+    ///
+    /// - Parameters:
+    ///   - value: The new value
+    ///   - subscript: The subscript
+    /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid.
+    public mutating func setValue<T>(_ value: JSON, forSubscript subscript: T) throws where T: JSONSubscriptRepresentable {
+        let `subscript` = Subscript(`subscript`)
+        try setValue(value, forSubscript: `subscript`)
+    }
+
     /// Update the value at the provided path
     ///
     /// Only JSON objects and JSON arrays can be subscripted.
@@ -704,7 +753,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///     ]
     /// ]
     ///
-    /// let path: JSON.Path = ["greek_letters", 2]
+    /// let path: JSON.Path = [JSON.Subscript(key: "greek_letters"), JSON.Subscript(index: 2)]
     /// try json.setValue("zeta", atPath: path)
     /// ```
     ///
@@ -724,40 +773,6 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
             try setValue(next, forSubscript: `subscript`)
         } else {
             try setValue(value, forSubscript: `subscript`)
-        }
-    }
-
-    /// Remove the value at the provided subscript.
-    ///
-    /// Only JSON objects and JSON arrays can be subscripted.
-    /// JSON objects can be be subscripted using strings, while JSON arrays can be subscripted using integers.
-    ///
-    /// ```swift
-    /// import Athena
-    ///
-    /// let object: JSON = ["key": "value"]
-    /// let array: JSON = ["alpha", "beta", "gamma"]
-    /// try object.removeValue(forSubscript: "key")
-    /// try array.removeValue(forSubscript: 0)
-    /// ```
-    ///
-    /// See <doc:Subscripting> for more information.
-    ///
-    /// - Parameter subscript: The subscript
-    /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid.
-    public mutating func removeValue(forSubscript subscript: Subscript) throws {
-        switch (self, `subscript`) {
-        case (var .object(dictionary), let .key(key)):
-            dictionary.removeValue(forKey: key)
-            self = .object(dictionary)
-        case (var .array(array), let .index(index)):
-            guard case array.indices = index else {
-                throw Error("Index \(index) out of bounds")
-            }
-            array.remove(at: index)
-            self = .array(array)
-        case (.object, _), (.array, _), (.string, _), (.number, _), (.literal, _):
-            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)")
         }
     }
 
@@ -799,6 +814,63 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         try removeValue(forSubscript: .index(index))
     }
 
+    /// Remove the value at the provided subscript.
+    ///
+    /// Only JSON objects and JSON arrays can be subscripted.
+    /// JSON objects can be be subscripted using strings, while JSON arrays can be subscripted using integers.
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let object: JSON = ["key": "value"]
+    /// let array: JSON = ["alpha", "beta", "gamma"]
+    /// try object.removeValue(forSubscript: JSON.Subscript(key: "key"))
+    /// try array.removeValue(forSubscript: JSON.Subscript(index: 0))
+    /// ```
+    ///
+    /// See <doc:Subscripting> for more information.
+    ///
+    /// - Parameter subscript: The subscript
+    /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid.
+    public mutating func removeValue(forSubscript subscript: Subscript) throws {
+        switch (self, `subscript`) {
+        case (var .object(dictionary), let .key(key)):
+            dictionary.removeValue(forKey: key)
+            self = .object(dictionary)
+        case (var .array(array), let .index(index)):
+            guard case array.indices = index else {
+                throw Error("Index \(index) out of bounds")
+            }
+            array.remove(at: index)
+            self = .array(array)
+        case (.object, _), (.array, _), (.string, _), (.number, _), (.literal, _):
+            throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)")
+        }
+    }
+
+    /// Remove the value at the provided subscript.
+    ///
+    /// Only JSON objects and JSON arrays can be subscripted.
+    /// JSON objects can be be subscripted using strings, while JSON arrays can be subscripted using integers.
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let object: JSON = ["key": "value"]
+    /// let array: JSON = ["alpha", "beta", "gamma"]
+    /// try object.removeValue(forSubscript: "key")
+    /// try array.removeValue(forSubscript: 0)
+    /// ```
+    ///
+    /// See <doc:Subscripting> for more information.
+    ///
+    /// - Parameter subscript: The subscript
+    /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid.
+    public mutating func removeValue<T>(forSubscript subscript: T) throws where T: JSONSubscriptRepresentable {
+        let `subscript` = Subscript(`subscript`)
+        try removeValue(forSubscript: `subscript`)
+    }
+
     /// Remove the value at the provided path
     ///
     /// Only JSON objects and JSON arrays can be subscripted.
@@ -815,7 +887,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///     ]
     /// ]
     ///
-    /// let path: JSON.Path = ["greek_letters", 1]
+    /// let path: JSON.Path = [JSON.Subscript(key: "greek_letters"), JSON.Subscript(index: 1)]
     /// try json.removeValue(atPath: path)
     /// ```
     ///
@@ -902,39 +974,17 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         }
     }
 
-    /// Retrive or update the value at the provided key
-    /// - Parameter key: The key
-    /// - Returns: The value at key, or ``JSON/Literal/null`` if no such value exists
-    public subscript(_ key: String) -> JSON {
-        get {
-            self[.key(key)]
-        }
-        set {
-            self[.key(key)] = newValue
-        }
-    }
-
-    /// Retrive or update the value at the provided index
-    /// - Parameter subscript: The index
-    /// - Returns: The value at index, or ``JSON/Literal/null`` if no such value exists
-    public subscript(_ index: Int) -> JSON {
-        get {
-            self[.index(index)]
-        }
-        set {
-            self[.index(index)] = newValue
-        }
-    }
-
-    /// Retrive or update the value at the provided path
-    /// - Parameter subscript: The path
+    /// Retrive or update the value at the provided subscript
+    /// - Parameter subscript: The subscript
     /// - Returns: The value at subscript, or ``JSON/Literal/null`` if no such value exists
-    public subscript(_ path: Path) -> JSON {
+    public subscript<T>(_ subscript: T) -> JSON where T: JSONSubscriptRepresentable {
         get {
-            (try? value(atPath: path)) ?? .literal(.null)
+            let `subscript` = Subscript(`subscript`)
+            return (try? value(forSubscript: `subscript`)) ?? .literal(.null)
         }
         set {
-            try? setValue(newValue, forPath: path)
+            let `subscript` = Subscript(`subscript`)
+            try? setValue(newValue, forSubscript: `subscript`)
         }
     }
 

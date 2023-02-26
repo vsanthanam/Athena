@@ -1,4 +1,4 @@
-# Retrieving Nested Values with Subscripts
+# Working with Nested Values using Subscripts
 
 Get values out of a ``JSON`` using subscripts
 
@@ -83,10 +83,14 @@ try innovator["inventions"].removeValue(atIndex: 3)
 
 ## Topics
 
-### Structs
+### Enumerations
 
 - ``JSON/Subscript``
 
 ### Typealiases
 
 - ``JSON/Path``
+
+### Protocols
+
+- ``JSONSubscriptRepresentable``
