@@ -25,7 +25,16 @@
 
 import Foundation
 
+/// A protocol that represents a type that can be represented as a ``JSON/Subscript``
+///
+/// Athena includes implementations of this protocol for the following Swit types:
+///  - `String`
+///  - `Int`
+///  - `RawRepresentable where RawValue: JSONSubscriptRepresentable`
 public protocol JSONSubscriptRepresentable {
+
+    /// Convert the value into a ``JSON/Subscript``
+    /// - Returns: The value represented as a ``JSON/Subscript``
     func toJSONSubscript() -> JSON.Subscript
 }
 
