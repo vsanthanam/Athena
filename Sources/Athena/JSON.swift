@@ -651,7 +651,10 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///   - value: The new value
     ///   - key: The key
     /// - Throws: A ``JSON/Error`` if the value is not subscriptable with a key.
-    public mutating func setValue(_ value: JSON, forKey key: String) throws {
+    public mutating func setValue(
+        _ value: JSON,
+        forKey key: String
+    ) throws {
         try setValue(value, forSubscript: .key(key))
     }
 
@@ -672,7 +675,10 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///   - value: The new value
     ///   - index: The index
     /// - Throws: A ``JSON/Error`` if the value is not subscriptable with an index, or if the provided index is invalid.
-    public mutating func setValue(_ value: JSON, atIndex index: Int) throws {
+    public mutating func setValue(
+        _ value: JSON,
+        atIndex index: Int
+    ) throws {
         try setValue(value, forSubscript: .index(index))
     }
 
@@ -696,7 +702,10 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///   - value: The new value
     ///   - subscript: The subscript
     /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid.
-    public mutating func setValue(_ value: JSON, forSubscript subscript: Subscript) throws {
+    public mutating func setValue(
+        _ value: JSON,
+        forSubscript subscript: Subscript
+    ) throws {
         switch (self, `subscript`) {
         case (var .object(dictionary), let .key(key)):
             dictionary[key] = value
@@ -732,7 +741,10 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///   - value: The new value
     ///   - subscript: The subscript
     /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided subscript is invalid.
-    public mutating func setValue<T>(_ value: JSON, forSubscript subscript: T) throws where T: JSONSubscriptRepresentable {
+    public mutating func setValue<T>(
+        _ value: JSON,
+        forSubscript subscript: T
+    ) throws where T: JSONSubscriptRepresentable {
         let `subscript` = Subscript(`subscript`)
         try setValue(value, forSubscript: `subscript`)
     }
@@ -763,7 +775,10 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///   - value: The new value
     ///   - path: The path
     /// - Throws: A ``JSON/Error`` if the value is not subscriptable, or if the provided path is invalid.
-    public mutating func setValue(_ value: JSON, forPath path: Path) throws {
+    public mutating func setValue(
+        _ value: JSON,
+        forPath path: Path
+    ) throws {
         guard let `subscript` = path.first else {
             throw Error("Path must contain at least one subscript")
         }

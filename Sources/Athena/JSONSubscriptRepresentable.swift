@@ -31,6 +31,7 @@ import Foundation
 ///  - `String`
 ///  - `Int`
 ///  - `RawRepresentable where RawValue: JSONSubscriptRepresentable`
+@available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
 public protocol JSONSubscriptRepresentable {
 
     /// Convert the value into a ``JSON/Subscript``
@@ -38,18 +39,21 @@ public protocol JSONSubscriptRepresentable {
     func toJSONSubscript() -> JSON.Subscript
 }
 
+@available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
 extension String: JSONSubscriptRepresentable {
     public func toJSONSubscript() -> JSON.Subscript {
         .key(self)
     }
 }
 
+@available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
 extension Int: JSONSubscriptRepresentable {
     public func toJSONSubscript() -> JSON.Subscript {
         .index(self)
     }
 }
 
+@available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
 public extension JSONSubscriptRepresentable where Self: RawRepresentable, RawValue: JSONSubscriptRepresentable {
     func toJSONSubscript() -> JSON.Subscript {
         rawValue.toJSONSubscript()
