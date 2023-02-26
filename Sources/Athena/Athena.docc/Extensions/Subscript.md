@@ -36,8 +36,9 @@ let index: JSON.Subscript = 23
 
 ### Initializers
 
-- ``JSON/Subscript/init(_:)-816ia``
-- ``JSON/Subscript/init(_:)-tq93``
+- ``JSON/Subscript/init(_:)``
+- ``JSON/Subscript/init(key:)``
+- ``JSON/Subscript/init(index:)``
 
 ### Enumeration Cases
 

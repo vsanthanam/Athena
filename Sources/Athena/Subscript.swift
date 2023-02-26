@@ -34,14 +34,20 @@ public extension JSON {
 
         /// Create a ``JSON/Subscript`` from a string
         /// - Parameter key: The string
-        public init(_ key: String) {
+        public init(key: String) {
             self = .key(key)
         }
 
         /// Create a ``JSON/Subscript`` from an integer
         /// - Parameter index: The integer
-        public init(_ index: Int) {
+        public init(index: Int) {
             self = .index(index)
+        }
+
+        /// Create a ``JSON/Subscript`` from a ``JSONSubscriptRepresentable``-conforming value
+        /// - Parameter value: The conforming value
+        public init<T>(_ value: T) where T: JSONSubscriptRepresentable {
+            self = value.toJSONSubscript()
         }
 
         // MARK: - Enumeration Cases
@@ -52,31 +58,7 @@ public extension JSON {
         /// A subscript representing a key inside a JSON array
         case index(Int)
 
-        // MARK: - API
-
-        public var keyValue: String {
-            get throws {
-                switch self {
-                case let .key(key):
-                    return key
-                case .index:
-                    throw Error("The subscript is not an index")
-                }
-            }
-        }
-
-        public var indexValue: Int {
-            get throws {
-                switch self {
-                case .key:
-                    throw Error("The subscript is not a key")
-                case let .index(index):
-                    return index
-                }
-            }
-        }
-
-        // MARK: - ExpressibleByStringLiteral
+        // MARK: - ExpressibeByStringLiteral
 
         /// A type that represents a string literal.
         public typealias StringLiteralType = String
@@ -112,6 +94,34 @@ public extension JSON {
         /// - Parameter value: The value to create.
         public init(integerLiteral value: IntegerLiteralType) {
             self = .index(value)
+        }
+
+        // MARK: - API
+
+        /// Get the `String` value of this subscript, if this subscript represents a key.
+        /// - Throws: An error, if this subscript does not represent a key.
+        public var keyValue: String {
+            get throws {
+                switch self {
+                case let .key(key):
+                    return key
+                case .index:
+                    throw Error("The subscript is not an index")
+                }
+            }
+        }
+
+        /// Get the `Int` value of this subscript, if this subscript represents an index.
+        /// - Throws: An error, if this subscript does not represent an index.
+        public var indexValue: Int {
+            get throws {
+                switch self {
+                case .key:
+                    throw Error("The subscript is not a key")
+                case let .index(index):
+                    return index
+                }
+            }
         }
 
         // MARK: - CustomStringConvertible
