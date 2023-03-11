@@ -8,7 +8,7 @@
 
 Athena is a library that provides type-safe APIs for working with JSON objects in Swift. It provides an idiomatic solution that is both faster and easier to use than Foundation's `JSONSerialization` API. It takes advantage of modern Swift language features, and provides APIs for easily creating, mutating, serializing, and deserializing JSON values. It also provides a system to easily encode other Swift types into a JSON representation and decode those same types from correctly shaped JSON values.
 
-Athena is based on [Freddy](https://github.com/bignerdranch/Freddy), an early library for working with JSON in Swift that is no longer maintained by its original authors.
+Athena is based on [Freddy](https://github.com/bignerdranch/Freddy), an early library for working with JSON in Swift that is no longer maintained by its original authors. The library itself has non-Apple dependencies, but the package does use the [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) and [DocC](https://github.com/apple/swift-docc-plugin) Swift Package Manager plugins.
 
 ## Installation
 
