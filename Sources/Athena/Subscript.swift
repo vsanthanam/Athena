@@ -56,7 +56,7 @@ public extension JSON {
         /// A subscript representing a key inside a JSON object
         case key(String)
 
-        /// A subscript representing a key inside a JSON array
+        /// A subscript representing an index inside a JSON array
         case index(Int)
 
         // MARK: - ExpressibeByStringLiteral
