@@ -149,7 +149,6 @@ let array = try json.arrayValue // Always Fails
 ### Encoding & Decoding
 
 - ``JSON/init(_:)-3hvss``
-- ``JSON/init(_:)-8recc``
 - ``JSON/decode(_:)``
 
 ### Serializing JSON

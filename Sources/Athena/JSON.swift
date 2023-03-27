@@ -59,35 +59,6 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         self = Encoder.encode(value)
     }
 
-    /// Initialize a ``JSON`` by encoding an optional ``JSONEncodable`` type
-    ///
-    /// Use this initializer to create a JSON representation of an optional ``JSONEncodable`` conforming type.
-    /// If the supplied optional is `nil`, the JSON value will contain `null`
-    ///
-    /// For example:
-    ///
-    /// ```swift
-    /// import Athena
-    ///
-    /// struct MyType: JSONEncodable { ... }
-    ///
-    /// let condition: Bool = ...
-    ///
-    /// let instance: MyType? = condition ? MyType() : nil
-    /// let json = JSON(instance)
-    /// ```
-    ///
-    /// For more information, see <doc:EncodingDecoding>
-    ///
-    /// - Parameter value: The conforming type
-    public init<T>(_ value: T?) where T: JSONEncodable {
-        guard let value else {
-            self = .null
-            return
-        }
-        self = .init(value)
-    }
-
     /// Initialize a ``JSON`` by deserializing a UTF-8 encoded data
     ///
     /// Use this initializer if you want to create a ``JSON`` value by deserializing UTF-8 encoded `Data`. For example:
