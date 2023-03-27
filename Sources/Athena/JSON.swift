@@ -126,152 +126,11 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         self = try Deserializer.deserialize(jsonString)
     }
 
-    /// Initialize a ``JSON`` from a `Bool`
+    /// Initialize a ``JSON`` value that contains an empty object
     ///
-    /// Use this initializer to create a ``JSON`` value from a `Bool`. For example:
-    ///
-    /// ```swift
-    /// import Athena
-    ///
-    /// let bool = true
-    /// let json = JSON(bool)
-    /// ```
-    ///
-    /// - Parameter bool: The boolean value
-    public init(_ bool: Bool) {
-        self = .literal(.init(bool))
-    }
-
-    /// Initialize a ``JSON`` from an optional `Bool`
-    ///
-    /// Use this initializer to create a ``JSON`` value from an optional `Bool`.
-    /// If the supplied optional is `nil`, the initializer JSON value will contain `null`
-    ///
-    /// For exmaple:
-    ///
-    /// ```swift
-    /// import Athena
-    ///
-    /// let condition: Bool = ...
-    ///
-    /// let bool: Bool? = condition ? true : nil
-    /// let json = JSON(bool)
-    /// ```
-    ///
-    /// - Parameter bool: The optional boolean value
-    public init(_ bool: Bool?) {
-        self = bool.map(JSON.init(_:)) ?? nil
-    }
-
-    /// Initialize a ``JSON`` from an `Int`
-    ///
-    /// Use this initializer to create a ``JSON`` value from an `Int`. For example:
-    ///
-    /// ```swift
-    /// import Athena
-    ///
-    /// let int = 12
-    /// let json = JSON(int)
-    /// ```
-    ///
-    /// - Parameter int: The integer value
-    public init(_ int: Int) {
-        self = .number(.init(int))
-    }
-
-    /// Initialize a ``JSON`` from an optional `Int`
-    ///
-    /// Use this initializer to create a ``JSON`` value from an optional `Int`.
-    /// If the supplied optional is `nil`, the initialized JSON value will contain `null`
-    ///
-    /// For example:
-    ///
-    /// ```swift
-    /// import Athena
-    ///
-    /// let condition: Bool = ...
-    ///
-    /// let int: Int? = condition : 12 : nil
-    /// let json = JSON(int)
-    /// ```
-    ///
-    /// - Parameter int: The optional integer value
-    public init(_ int: Int?) {
-        self = int.map(JSON.init(_:)) ?? nil
-    }
-
-    /// Initialize a ``JSON`` from a `Double`
-    ///
-    /// Use this initializer to create a ``JSON`` value from a `Double`. For example:
-    ///
-    /// ```swift
-    /// import Athena
-    ///
-    /// let double = 4.2
-    /// let json = JSON(double)
-    /// ```
-    ///
-    /// - Parameter double: The double value
-    public init(_ double: Double) {
-        self = .number(.init(double))
-    }
-
-    /// Initialize a ``JSON`` from an optional `Double`
-    ///
-    /// Use this initializer to create a ``JSON`` value from an optional `Double`.
-    /// If the supplied optional is `nil`, the initialized JSON value will contain `null`.
-    ///
-    /// For example:
-    ///
-    /// ```
-    /// import Athena
-    ///
-    /// let condition: Bool = ...
-    ///
-    /// let double: Double? = condition ? 4.2 : nil
-    /// let json = JSON(double)
-    /// ```
-    ///
-    /// - Parameter double: The optional double value
-    public init(_ double: Double?) {
-        self = double.map(JSON.init(_:)) ?? nil
-    }
-
-    /// Initialize a ``JSON`` from a `String`
-    ///
-    /// Use this initializer to create a ``JSON`` value from a `String`. For example:
-    ///
-    /// ```swift
-    /// import Athena
-    ///
-    /// let string = "Steve"
-    /// let json = JSON(string)
-    /// ```
-    ///
-    /// - Parameter string: The string value
-    public init(_ string: String) {
-        self = .string(string)
-    }
-
-    /// Initialize a ``JSON`` from an optional `String`
-    ///
-    /// Use this initializer to create a ``JSON`` value from an optional `String`.
-    /// If the supplied optional is `nil`, the initialized JSON value will contain `null`
-    ///
-    /// For example:
-    ///
-    /// ```
-    /// import Athena
-    ///
-    /// let condition: Bool = ...
-    ///
-    /// let string: String? = condition : "Steve" : nil
-    /// let json = JSON(string)
-    /// ```
-    ///
-    /// - Parameter string: The optional string value
-    public init(_ string: String?) {
-        self = string.map(JSON.init(_:)) ?? nil
+    /// Use this initializer to create a ``JSON`` value that contains an empty JSON object
+    public init() {
+        self = .object([:])
     }
 
     /// Initialize a ``JSON`` from an array of ``JSON`` values
@@ -308,7 +167,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///
     /// - Parameter array: The optional array of values
     public init(_ array: [JSON]?) {
-        self = array.map(JSON.init) ?? nil
+        self = array.map(JSON.init) ?? .literal(.null)
     }
 
     /// Initialize a ``JSON`` from a dictionary of `String` keys and ``JSON`` values
@@ -344,14 +203,155 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     ///
     /// - Parameter dictionary: The optional dictionary of strings and values
     public init(_ dictionary: [String: JSON]?) {
-        self = dictionary.map(JSON.init) ?? nil
+        self = dictionary.map(JSON.init) ?? .literal(.null)
     }
 
-    /// Initialize a ``JSON`` value that contains an empty object
+    /// Initialize a ``JSON`` from an `Int`
     ///
-    /// Use this initializer to create a ``JSON`` value that contains an empty JSON object
-    public init() {
-        self = .object([:])
+    /// Use this initializer to create a ``JSON`` value from an `Int`. For example:
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let int = 12
+    /// let json = JSON(int)
+    /// ```
+    ///
+    /// - Parameter int: The integer value
+    public init(_ int: Int) {
+        self = .number(.init(int))
+    }
+
+    /// Initialize a ``JSON`` from an optional `Int`
+    ///
+    /// Use this initializer to create a ``JSON`` value from an optional `Int`.
+    /// If the supplied optional is `nil`, the initialized JSON value will contain `null`
+    ///
+    /// For example:
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let condition: Bool = ...
+    ///
+    /// let int: Int? = condition : 12 : nil
+    /// let json = JSON(int)
+    /// ```
+    ///
+    /// - Parameter int: The optional integer value
+    public init(_ int: Int?) {
+        self = int.map(JSON.init(_:)) ?? .literal(.null)
+    }
+
+    /// Initialize a ``JSON`` from a `Double`
+    ///
+    /// Use this initializer to create a ``JSON`` value from a `Double`. For example:
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let double = 4.2
+    /// let json = JSON(double)
+    /// ```
+    ///
+    /// - Parameter double: The double value
+    public init(_ double: Double) {
+        self = .number(.init(double))
+    }
+
+    /// Initialize a ``JSON`` from an optional `Double`
+    ///
+    /// Use this initializer to create a ``JSON`` value from an optional `Double`.
+    /// If the supplied optional is `nil`, the initialized JSON value will contain `null`.
+    ///
+    /// For example:
+    ///
+    /// ```
+    /// import Athena
+    ///
+    /// let condition: Bool = ...
+    ///
+    /// let double: Double? = condition ? 4.2 : nil
+    /// let json = JSON(double)
+    /// ```
+    ///
+    /// - Parameter double: The optional double value
+    public init(_ double: Double?) {
+        self = double.map(JSON.init(_:)) ?? .literal(.null)
+    }
+
+    /// Initialize a ``JSON`` from an optional `String`
+    ///
+    /// Use this initializer to create a ``JSON`` value from an optional `String`.
+    /// If the supplied optional is `nil`, the initialized JSON value will contain `null`
+    ///
+    /// For example:
+    ///
+    /// ```
+    /// import Athena
+    ///
+    /// let condition: Bool = ...
+    ///
+    /// let string: String? = condition : "Steve" : nil
+    /// let json = JSON(string)
+    /// ```
+    ///
+    /// - Parameter string: The optional string value
+    public init(_ string: String?) {
+        self = string.map(JSON.init(_:)) ?? .literal(.null)
+    }
+
+    /// Initialize a ``JSON`` from a `String`
+    ///
+    /// Use this initializer to create a ``JSON`` value from a `String`. For example:
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let string = "Steve"
+    /// let json = JSON(string)
+    /// ```
+    ///
+    /// - Parameter string: The string value
+    public init(_ string: String) {
+        self = .string(string)
+    }
+
+    /// Initialize a ``JSON`` from a `Bool`
+    ///
+    /// Use this initializer to create a ``JSON`` value from a `Bool`. For example:
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let bool = true
+    /// let json = JSON(bool)
+    /// ```
+    ///
+    /// - Parameter bool: The boolean value
+    public init(_ bool: Bool) {
+        self = .literal(.init(bool))
+    }
+
+    /// Initialize a ``JSON`` from an optional `Bool`
+    ///
+    /// Use this initializer to create a ``JSON`` value from an optional `Bool`.
+    /// If the supplied optional is `nil`, the initializer JSON value will contain `null`
+    ///
+    /// For exmaple:
+    ///
+    /// ```swift
+    /// import Athena
+    ///
+    /// let condition: Bool = ...
+    ///
+    /// let bool: Bool? = condition ? true : nil
+    /// let json = JSON(bool)
+    /// ```
+    ///
+    /// - Parameter bool: The optional boolean value
+    public init(_ bool: Bool?) {
+        self = bool.map(JSON.init(_:)) ?? .literal(.null)
     }
 
     // MARK: - API
@@ -404,22 +404,25 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
     /// ```
     case literal(Literal)
 
-    /// Get the value as a `Bool`
-    /// - Throws: a ``JSON/Error``, if this JSON represents a type other than a bool
-    public var boolValue: Bool {
+    /// Get the value as an `Array<JSON>`
+    /// - Throws: a ``JSON/Error``, if this JSON represents a type other than an array
+    public var arrayValue: [JSON] {
         get throws {
-            try literalValue.boolValue
+            guard case let .array(array) = self else {
+                throw Error("The value is not an array")
+            }
+            return array
         }
     }
 
-    /// Get the value as a ``JSON/Literal``
-    /// - Throws: a ``JSON/Error``, if this JSON represents a type other than a literal `true`, `false`, or `null`
-    public var literalValue: Literal {
+    /// Get the value as a `Dictionary<String, JSON>`
+    /// - Throws: a ``JSON/Error``, if this JSON represents a type other than an object
+    public var dictionaryValue: [String: JSON] {
         get throws {
-            guard case let .literal(literal) = self else {
-                throw Error("The value is not a literal")
+            guard case let .object(dictionary) = self else {
+                throw Error("The value is not a dictionary")
             }
-            return literal
+            return dictionary
         }
     }
 
@@ -461,25 +464,11 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         }
     }
 
-    /// Get the value as an `Array<JSON>`
-    /// - Throws: a ``JSON/Error``, if this JSON represents a type other than an array
-    public var arrayValue: [JSON] {
+    /// Get the value as a `Bool`
+    /// - Throws: a ``JSON/Error``, if this JSON represents a type other than a bool
+    public var boolValue: Bool {
         get throws {
-            guard case let .array(array) = self else {
-                throw Error("The value is not an array")
-            }
-            return array
-        }
-    }
-
-    /// Get the value as a `Dictionary<String, JSON>`
-    /// - Throws: a ``JSON/Error``, if this JSON represents a type other than an object
-    public var dictionaryValue: [String: JSON] {
-        get throws {
-            guard case let .object(dictionary) = self else {
-                throw Error("The value is not a dictionary")
-            }
-            return dictionary
+            try literalValue.boolValue
         }
     }
 
@@ -491,6 +480,17 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
             return false
         }
         return literal.isNull
+    }
+
+    /// Get the value as a ``JSON/Literal``
+    /// - Throws: a ``JSON/Error``, if this JSON represents a type other than a literal `true`, `false`, or `null`
+    public var literalValue: Literal {
+        get throws {
+            guard case let .literal(literal) = self else {
+                throw Error("The value is not a literal")
+            }
+            return literal
+        }
     }
 
     /// Retrive the value at the provided index.
@@ -707,16 +707,20 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         forSubscript subscript: Subscript
     ) throws {
         switch (self, `subscript`) {
-        case (var .object(dictionary), let .key(key)):
-            dictionary[key] = value
-            self = .object(dictionary)
         case (var .array(array), let .index(index)):
             guard case array.indices = index else {
                 throw Error("Index OOB")
             }
             array[index] = value
             self = .array(array)
-        case (.object, _), (.array, _), (.string, _), (.number, _), (.literal, _):
+        case (var .object(dictionary), let .key(key)):
+            dictionary[key] = value
+            self = .object(dictionary)
+        case (.array, _),
+             (.object, _),
+             (.string, _),
+             (.number, _),
+             (.literal, _):
             throw Error("JSON element \(self) is not subscriptable using subscript \(`subscript`)")
         }
     }

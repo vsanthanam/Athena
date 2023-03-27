@@ -106,18 +106,12 @@ extension Bool: JSONCodable {
 
     public init(json: JSON) throws {
         switch json {
-        case .array, .object:
+        case .array,
+             .object:
             throw JSON.Error("Bool value cannot be decoded from \(json)")
         case let .number(number):
             do {
                 self = try number.decode()
-                break
-            } catch {
-                throw JSON.Error("Bool value cannot be decoded from \(json)")
-            }
-        case let .literal(literal):
-            do {
-                self = try literal.decode()
                 break
             } catch {
                 throw JSON.Error("Bool value cannot be decoded from \(json)")
@@ -131,6 +125,13 @@ extension Bool: JSONCodable {
                 self = true
                 return
             default:
+                throw JSON.Error("Bool value cannot be decoded from \(json)")
+            }
+        case let .literal(literal):
+            do {
+                self = try literal.decode()
+                break
+            } catch {
                 throw JSON.Error("Bool value cannot be decoded from \(json)")
             }
         }
@@ -151,14 +152,10 @@ extension Int: JSONCodable {
 
     public init(json: JSON) throws {
         switch json {
-        case .array, .object, .literal:
+        case .array,
+             .object,
+             .literal:
             throw JSON.Error("Int value cannot be decoded from \(json)")
-        case let .string(string):
-            guard let int = Int(exactly: string) else {
-                throw JSON.Error("Int value cannot be decoded from \(json)")
-            }
-            self = int
-            return
         case let .number(number):
             do {
                 self = try number.decode()
@@ -166,6 +163,12 @@ extension Int: JSONCodable {
             } catch {
                 throw JSON.Error("Int value cannot be decoded from \(json)")
             }
+        case let .string(string):
+            guard let int = Int(exactly: string) else {
+                throw JSON.Error("Int value cannot be decoded from \(json)")
+            }
+            self = int
+            return
         }
     }
 
@@ -184,13 +187,10 @@ extension Double: JSONCodable {
 
     public init(json: JSON) throws {
         switch json {
-        case .array, .object, .literal:
+        case .array,
+             .object,
+             .literal:
             throw JSON.Error("Double value cannot be decoded from \(json)")
-        case let .string(string):
-            guard let double = Double(string) else {
-                throw JSON.Error("Double value cannot be decoded from \(json)")
-            }
-            self = double
         case let .number(number):
             do {
                 self = try number.decode()
@@ -198,6 +198,11 @@ extension Double: JSONCodable {
             } catch {
                 throw JSON.Error("Double value cannot be decoded from \(json)")
             }
+        case let .string(string):
+            guard let double = Double(string) else {
+                throw JSON.Error("Double value cannot be decoded from \(json)")
+            }
+            self = double
         }
     }
 
