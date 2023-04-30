@@ -3,7 +3,7 @@
 [![MIT License](https://img.shields.io/github/license/vsanthanam/Athena)](https://github.com/vsanthanam/Athena/blob/main/LICENSE)
 [![Package Releases](https://img.shields.io/github/v/release/vsanthanam/Athena)](https://github.com/vsanthanam/Athena/releases)
 [![Build Statis](https://img.shields.io/github/actions/workflow/status/vsanthanam/Athena/spm-build-test.yml)](https://github.com/vsanthanam/Athena/actions)
-[![Swift Version](https://img.shields.io/badge/swift-5.7-critical)](https://swift.org)
+[![Swift Version](https://img.shields.io/badge/swift-5.8-critical)](https://swift.org)
 [![Supported Platforms](https://img.shields.io/badge/platform-iOS%2012-lightgrey)](https://developer.apple.com)
 
 Athena is a library that provides type-safe APIs for working with JSON objects in Swift. It provides an idiomatic solution that is both faster and easier to use than Foundation's `JSONSerialization` API. It takes advantage of modern Swift language features, and provides APIs for easily creating, mutating, serializing, and deserializing JSON values. It also provides a system to easily encode other Swift types into a JSON representation and decode those same types from correctly shaped JSON values.
