@@ -2,7 +2,7 @@
 branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
 
 run_docc () {
-   swift package --allow-writing-to-directory docs generate-documentation --target Athena --disable-indexing --transform-for-static-hosting --hosting-base-path Athena/docs --output-path docs
+   swift package --allow-writing-to-directory docs generate-documentation --target Athena --disable-indexing --transform-for-static-hosting --hosting-base-path Athena/docs --output-path docs --include-extended-types
 }
 
 create_branches () {
