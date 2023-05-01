@@ -131,12 +131,34 @@ Fore more information, see <doc:Serializing> and <doc:Deserializing>.
 - ``JSON/Number``
 - ``JSON/Literal``
 
-### Guides
+### Subscripting
 
 - <doc:Subscripting>
+- ``JSON/Subscript``
+- ``JSON/Path``
+- ``JSONSubscriptRepresentable``
+
+### Encoding & Decoding
+
 - <doc:EncodingDecoding>
+- ``JSON/Encoder``
+- ``JSON/Decoder``
+- ``JSONEncodable``
+- ``JSONDecodable``
+- ``JSONCodable``
+
+### Serialization
+
 - <doc:Serializing>
+- ``JSON/Serializer``
+- ``JSON/Serializer/Options``
+
+### Deserialization
+
 - <doc:Deserializing>
+- ``JSON/Deserializer``
+- ``JSON/Deserializer/Options``
+- ``JSON/Deserializer/EncodingDetector``
 
 ### Errors
 

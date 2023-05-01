@@ -80,17 +80,3 @@ try innovator["inventions"].removeValue(atIndex: 3)
 ```
 
 - Note: ``JSON`` is a value type. To mutate a JSON value using subscripts, it must be declared as a variable, not as a constant.
-
-## Topics
-
-### Enumerations
-
-- ``JSON/Subscript``
-
-### Typealiases
-
-- ``JSON/Path``
-
-### Protocols
-
-- ``JSONSubscriptRepresentable``

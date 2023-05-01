@@ -51,7 +51,7 @@ let innovator: JSON = .object(
     [
         "first_name": .string("Steve"),
         "last_name": .string("Jobs"),
-        "college_degree": .null,
+        "college_degree": .literal(.null),
         "inventions": .list(
             [
                 .object(
