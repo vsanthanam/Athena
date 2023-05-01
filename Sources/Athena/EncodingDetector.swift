@@ -68,7 +68,7 @@ public extension JSON.Deserializer {
         /// `FF FE`              | UTF-16LE
         /// `EF BB BF`       | UTF-8
         ///
-        /// If a BOM is not found then we detection approach described in [RFC 4627](http://www.ietf.org/rfc/rfc4627.txt)
+        /// If a BOM is not found, we instead use the detection approach described in [RFC 4627](http://www.ietf.org/rfc/rfc4627.txt)
         ///
         /// Since the first two characters of a JSON text will always be ASCII characters [RFC 0020](https://www.ietf.org/rfc/rfc0020.txt),
         /// it is possible to determine whether an octet stream is UTF-8, UTF-16 (BE or LE), or UTF-32 (BE or LE) by looking at the pattern of nulls in the first four octets using the following table

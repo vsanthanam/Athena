@@ -174,19 +174,3 @@ let myInstance = MyType(value: "SomeString", entries: ["Some", "Entries"])
 let encoded = await JSON.Encoder.encode(myInstance)
 let decoded = try await JSON.Decoder.decode(MyType.self, from: encoded)
 ```
-
-## Topics
-
-### Structs
-
-- ``JSON/Encoder``
-- ``JSON/Decoder``
-
-### Protocols
-
-- ``JSONEncodable``
-- ``JSONDecodable``
-
-### Typealiases
-
-- ``JSONCodable``

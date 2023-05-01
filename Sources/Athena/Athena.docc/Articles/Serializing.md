@@ -62,10 +62,3 @@ func performSerialization() async {
     }
 }
 ```
-
-## Topics
-
-### Structs
-
-- ``JSON/Serializer``
-- ``JSON/Serializer/Options``

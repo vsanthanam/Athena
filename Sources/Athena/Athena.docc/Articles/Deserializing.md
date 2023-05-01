@@ -29,14 +29,3 @@ import Athena
 let jsonString = "[{\"first_key\": \"value\", \"second_key\": null}]"
 let json = try await JSON.Deserializer.deserialize(jsonString, options: [.nullSkipsKey, .fragmentsAllowed])
 ```
-
-## Topics
-
-### Structs
-
-- ``JSON/Deserializer``
-- ``JSON/Deserializer/Options``
-
-### Enumerations
-
-- ``JSON/Deserializer/EncodingDetector``
