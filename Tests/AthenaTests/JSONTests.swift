@@ -64,38 +64,38 @@ final class JSONTests: XCTestCase {
         XCTAssertEqual(test, expected)
     }
 
-//    func test_mutability_list_path() {
-//        var test: JSON = [
-//            "power": [
-//                "sniqqity": [
-//                    "foo": "bar",
-//                    "bar": "foo"
-//                ],
-//                "omq": [
-//                    1,
-//                    "crap"
-//                ]
-//            ]
-//        ]
-//
-//        test["power", "sniqqity", "foo"] = "foo"
-//        test["power", "sniqqity", "bar"] = "bar"
-//        test["power", "omq", 1] = "shit"
-//
-//        let expected: JSON = [
-//            "power": [
-//                "sniqqity": [
-//                    "foo": "foo",
-//                    "bar": "bar"
-//                ],
-//                "omq": [
-//                    1,
-//                    "shit"
-//                ]
-//            ]
-//        ]
-//
-//        XCTAssertEqual(test, expected)
-//    }
+    func test_mutability_list_path() {
+        var test: JSON = [
+            "power": [
+                "sniqqity": [
+                    "foo": "bar",
+                    "bar": "foo"
+                ],
+                "omq": [
+                    1,
+                    "crap"
+                ]
+            ]
+        ]
+
+        try! test.setValue("foo", forPath: ["power", "sniqqity", "foo"])
+        try! test.setValue("bar", forPath: ["power", "sniqqity", "bar"])
+        try! test.setValue("shit", forPath: ["power", "omq", 1])
+
+        let expected: JSON = [
+            "power": [
+                "sniqqity": [
+                    "foo": "foo",
+                    "bar": "bar"
+                ],
+                "omq": [
+                    1,
+                    "shit"
+                ]
+            ]
+        ]
+
+        XCTAssertEqual(test, expected)
+    }
 
 }

@@ -140,6 +140,6 @@ public extension JSON {
     }
 
     /// A typealias representing a JSON Path
-    typealias Path = [Subscript]
+    typealias Path = [any JSONSubscriptRepresentable]
 
 }
