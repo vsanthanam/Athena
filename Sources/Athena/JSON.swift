@@ -1140,7 +1140,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
 
     // MARK: - Private
 
-    private func toEscapedString() -> String {
+    fileprivate func toEscapedString() -> String {
         switch self {
         case let .array(array):
             return "["
@@ -1180,7 +1180,7 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
         }
     }
 
-    private func toPrettyString(tabs: Int = 0) -> String {
+    fileprivate func toPrettyString(tabs: Int = 0) -> String {
         let tabString = Array(0 ..< tabs)
             .reduce("") { prev, _ in
                 prev + "\t"
@@ -1225,4 +1225,16 @@ public enum JSON: Equatable, Hashable, Sendable, CustomStringConvertible, Custom
             }
         }
     }
+}
+
+extension String {
+
+    init(escaping value: JSON, pretty: Bool = false) {
+        if pretty {
+            self = value.toPrettyString()
+        } else {
+            self = value.toEscapedString()
+        }
+    }
+
 }
