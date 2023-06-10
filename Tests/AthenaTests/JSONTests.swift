@@ -30,6 +30,42 @@ import XCTest
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 5.0, *)
 final class JSONTests: XCTestCase {
 
+    func test_static_zero() {
+        let sugar = JSON.zero
+        XCTAssertEqual(sugar, .number(.int(0)))
+    }
+
+    func test_static_null() {
+        let sugar = JSON.null
+        XCTAssertEqual(sugar, .literal(.null))
+    }
+
+    func test_init_encodable() {
+        struct Foo: JSONEncodable {
+            func toJSON() -> Athena.JSON {
+                .object(
+                    [
+                        "bar": .string(bar)
+                    ]
+                )
+            }
+
+            let bar: String
+        }
+
+        let expected = JSON.object(
+            [
+                "bar": .string("test")
+            ]
+        )
+
+        let obj = Foo(bar: "test")
+
+        let json = JSON(obj)
+
+        XCTAssertEqual(json, expected)
+    }
+
     func test_mutability_single_subscript() {
         var test: JSON = [
             "power": [
